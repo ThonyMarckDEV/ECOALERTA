@@ -32,6 +32,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
 
+/**
+ * ESTA ES LA INTERFAZ DEL BASURERO
+ */
 public class BasureroUI extends AppCompatActivity {
 
     private TextView txtWelcome;
