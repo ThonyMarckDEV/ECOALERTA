@@ -16,15 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ECOALERTA"
         tools:targetApi="31">
-        <activity
-            android:name=".Interfaces.BasureroUI"
-            android:exported="false" />
-        <activity
-            android:name=".Interfaces.AdminUI"
-            android:exported="false" />
-        <activity
-            android:name=".Interfaces.UserUI"
-            android:exported="false" />
+
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -38,8 +30,21 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDzahj5b5ZpZ0XrQgaeISShGiyxMdxrTK4" />
+            android:value="YOUR_API_KEY" />
 
+        <activity
+            android:name=".Interfaces.MapUIUser"
+            android:exported="false"
+            android:label="@string/title_activity_map_uiuser" />
+        <activity
+            android:name=".Interfaces.BasureroUI"
+            android:exported="false" />
+        <activity
+            android:name=".Interfaces.AdminUI"
+            android:exported="false" />
+        <activity
+            android:name=".Interfaces.UserUI"
+            android:exported="false" />
         <activity
             android:name=".Interfaces.MapUI"
             android:exported="false"

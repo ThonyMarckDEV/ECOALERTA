@@ -1,6 +1,7 @@
 package com.example.ecoalerta.Interfaces;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ public class UserUI extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         imgvPerfil = findViewById(R.id.imgvPerfil);
         imgvLoading = findViewById(R.id.imgvLoading); // Inicializar el ImageView para el GIF
+        Button btnVerMapa = findViewById(R.id.btnVerMapa); // Inicializar el botón para ver mapa
 
         // Obtener el username del Intent
         String username = getIntent().getStringExtra("username");
@@ -73,6 +75,12 @@ public class UserUI extends AppCompatActivity {
                 // Mostrar la pantalla de carga
                 Intent cargaIntent = new Intent(UserUI.this, CargaUI.class);
                 startActivity(cargaIntent);
+
+                // Para limpiar el nombre de usuario cuando el usuario cierra sesión
+                SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.remove("username"); // O editor.clear() para borrar todos los datos
+                editor.apply();
 
                 // Actualizar el estado del usuario a "logged_off" en el servidor
                 new Thread(new Runnable() {
@@ -119,6 +127,18 @@ public class UserUI extends AppCompatActivity {
                 }, 500); // Esperar 500 ms antes de iniciar LoginUI
             }
         });
+
+        // Configurar el botón de ver mapa
+        if (username != null) {
+            btnVerMapa.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mapIntent = new Intent(UserUI.this, MapUIUser.class);
+                    mapIntent.putExtra("username", username); // Pasar el nombre de usuario
+                    startActivity(mapIntent);
+                }
+            });
+        }
     }
 
     private void cargarImagenPerfil(String username) {
@@ -261,5 +281,47 @@ public class UserUI extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Actualizar el estado del usuario a "logged_off" en el servidor
+        String username = getIntent().getStringExtra("username");
+        if (username != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // URL del archivo PHP
+                        URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php"); // Cambia esta URL a la URL correcta
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestMethod("POST");
+                        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                        connection.setDoOutput(true);
+
+                        // Enviar el nombre de usuario al servidor
+                        String postData = "username=" + URLEncoder.encode(username, "UTF-8");
+                        OutputStream os = connection.getOutputStream();
+                        os.write(postData.getBytes());
+                        os.flush();
+                        os.close();
+
+                        // Leer la respuesta del servidor
+                        int responseCode = connection.getResponseCode();
+                        if (responseCode == HttpURLConnection.HTTP_OK) {
+                            // Éxito
+                        } else {
+                            // Error
+                        }
+
+                        connection.disconnect();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
     }
 }

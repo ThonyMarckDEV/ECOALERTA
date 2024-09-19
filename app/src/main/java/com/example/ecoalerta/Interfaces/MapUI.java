@@ -1,10 +1,10 @@
 package com.example.ecoalerta.Interfaces;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
-import android.widget.Button;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +18,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -26,6 +25,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 public class MapUI extends AppCompatActivity implements OnMapReadyCallback {
@@ -36,11 +44,15 @@ public class MapUI extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private Marker lastMarker;
     private MapView mapView;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_ui);
+
+        // Obtener el username del Intent
+        username = getIntent().getStringExtra("username");
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -50,11 +62,8 @@ public class MapUI extends AppCompatActivity implements OnMapReadyCallback {
         db = FirebaseFirestore.getInstance();
         locationService = new LocationService(this, fusedLocationClient, db); // Pasar el contexto aquí
 
-        if (LocationHelper.checkLocationPermission(this)) {
-            locationService.updateLocation();
-        } else {
-            LocationHelper.requestLocationPermission(this);
-        }
+
+        new CheckUserRoleTask().execute(username);
 
         // Update location every 3 seconds
         final Handler handler = new Handler();
@@ -66,12 +75,6 @@ public class MapUI extends AppCompatActivity implements OnMapReadyCallback {
             }
         };
         handler.post(updateLocationTask);
-
-        // Obtener el username del Intent
-        String username = getIntent().getStringExtra("username");
-        if (username != null) {
-            // Usa el username aquí si es necesario
-        }
     }
 
     @Override
@@ -98,7 +101,7 @@ public class MapUI extends AppCompatActivity implements OnMapReadyCallback {
 
                         // Agregar un nuevo marcador
                         lastMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Current Location").icon(icon));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f));
                     }
                 });
     }
@@ -118,8 +121,45 @@ public class MapUI extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mapView.onDestroy();
+
+        // Actualizar el estado del usuario a "logged_off" en el servidor
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Obtener el nombre de usuario del Intent
+                    String username = getIntent().getStringExtra("username");
+
+                    // URL del archivo PHP
+                    URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php"); // Cambia esta URL a la URL correcta
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setDoOutput(true);
+
+                    // Enviar el nombre de usuario al servidor
+                    String postData = "username=" + URLEncoder.encode(username, "UTF-8");
+                    OutputStream os = connection.getOutputStream();
+                    os.write(postData.getBytes());
+                    os.flush();
+                    os.close();
+
+                    // Leer la respuesta del servidor
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        // Éxito
+                    } else {
+                        // Error
+                    }
+
+                    connection.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
+
 
     @Override
     public void onLowMemory() {
@@ -139,22 +179,79 @@ public class MapUI extends AppCompatActivity implements OnMapReadyCallback {
 
     @Override
     public void onBackPressed() {
-        // Mostrar la pantalla de carga antes de volver a LoginUI
+        // Obtener el nombre del usuario (esto depende de cómo lo estés manejando en tu aplicación)
+        String userName = username; // Reemplaza esto con el nombre real del usuario
+
+        // Mostrar la pantalla de carga antes de volver a UserUI
         Intent cargaIntent = new Intent(MapUI.this, CargaUI.class);
         startActivity(cargaIntent);
 
-        // Usar Handler para retrasar el inicio de LoginUI y permitir que la pantalla de carga se muestre
+        // Usar Handler para retrasar el inicio de UserUI y permitir que la pantalla de carga se muestre
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Asegúrate de que la pantalla de carga esté cerrada antes de iniciar LoginUI
-                Intent intent = new Intent(MapUI.this, LoginUI.class);
+                // Asegúrate de que la pantalla de carga esté cerrada antes de iniciar UserUI
+                Intent intent = new Intent(MapUI.this, BasureroUI.class);
+                // Agregar el nombre del usuario al Intent
+                intent.putExtra("username", userName);
+
                 startActivity(intent);
                 finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
             }
-        }, 500); // Esperar 500 ms antes de iniciar LoginUI
+        }, 500); // Esperar 500 ms antes de iniciar UserUI
+    }
 
-        // Opcional: Si quieres que el back button no vuelva a la actividad actual
-        // finish(); // Descomenta esta línea si quieres cerrar la actividad actual
+    private class CheckUserRoleTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String username = params[0];
+            String result = "";
+
+            try {
+                String urlString = "https://modern-blindly-kangaroo.ngrok-free.app/PHP/get_user_rol.php?username=" + URLEncoder.encode(username, "UTF-8");
+                URL url = new URL(urlString);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+                reader.close();
+
+                result = stringBuilder.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                if (jsonObject.has("rol")) {
+                    String rol = jsonObject.getString("rol");
+                    if ("Basurero".equals(rol)) {
+                        // Ejecuta la lógica si el rol es Basurero
+                        if (LocationHelper.checkLocationPermission(MapUI.this)) {
+                            locationService.updateLocation();
+                        } else {
+                            LocationHelper.requestLocationPermission(MapUI.this);
+                        }
+                    }
+                } else if (jsonObject.has("error")) {
+                    Log.e("CheckUserRoleTask", jsonObject.getString("error"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

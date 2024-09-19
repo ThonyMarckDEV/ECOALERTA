@@ -299,4 +299,46 @@ public class BasureroUI extends AppCompatActivity {
             }
         }).start();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Actualizar el estado del usuario a "logged_off" en el servidor
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Obtener el nombre de usuario del Intent
+                    String username = getIntent().getStringExtra("username");
+
+                    // URL del archivo PHP
+                    URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php"); // Cambia esta URL a la URL correcta
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setDoOutput(true);
+
+                    // Enviar el nombre de usuario al servidor
+                    String postData = "username=" + URLEncoder.encode(username, "UTF-8");
+                    OutputStream os = connection.getOutputStream();
+                    os.write(postData.getBytes());
+                    os.flush();
+                    os.close();
+
+                    // Leer la respuesta del servidor
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        // Éxito
+                    } else {
+                        // Error
+                    }
+
+                    connection.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 }

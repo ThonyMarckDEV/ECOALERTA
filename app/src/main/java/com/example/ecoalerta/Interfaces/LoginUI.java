@@ -1,5 +1,6 @@
 package com.example.ecoalerta.Interfaces;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
@@ -57,7 +58,6 @@ public class LoginUI extends AppCompatActivity {
         txtUsername = findViewById(R.id.txtUserNameLogin);
         txtPassword = findViewById(R.id.txtPasswordLogin);
         Button btnLogin = findViewById(R.id.btnLogearse); // Asumiendo que este es el id del botón de inicio de sesión
-        Button btnMapa = findViewById(R.id.btnMapa);
         TextView lblNuevo = findViewById(R.id.lblNuevo);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -74,13 +74,6 @@ public class LoginUI extends AppCompatActivity {
 
                 // Ejecutar el LoginTask con las credenciales
                 new LoginTask().execute(username, password);
-            }
-        });
-
-        btnMapa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                irMapa();
             }
         });
 
@@ -157,6 +150,12 @@ public class LoginUI extends AppCompatActivity {
                     String rol = jsonResponse.getString("rol");
                     String username = jsonResponse.getString("username");
 
+                    // Guardar el nombre de usuario en SharedPreferences
+                    SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("username", username);
+                    editor.apply();
+
                     Intent intent;
                     switch (rol) {
                         case "Usuario":
@@ -187,21 +186,7 @@ public class LoginUI extends AppCompatActivity {
                 Toast.makeText(LoginUI.this, "Error al procesar la respuesta: " + result, Toast.LENGTH_LONG).show();
             }
         }
-    }
 
-    private void irMapa() {
-        // Mostrar la pantalla de carga antes de iniciar MapUI
-        startActivity(cargaIntent);
-
-        // Usar Handler para retrasar el inicio de la nueva actividad y permitir que la pantalla de carga se muestre
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(LoginUI.this, MapUI.class);
-                startActivity(intent);
-                finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
-            }
-        }, 500); // Esperar 500 ms antes de iniciar MapUI
     }
 
     private void irRegister() {
