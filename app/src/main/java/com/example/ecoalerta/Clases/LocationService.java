@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Para manejar la obtención y actualización de la ubicación en firebase.
+ * Para manejar la obtención y actualización de la ubicación en firebase ok.
  */
 public class LocationService {
 
