@@ -48,6 +48,7 @@ public class UserUI extends AppCompatActivity {
         imgvPerfil = findViewById(R.id.imgvPerfil);
         imgvLoading = findViewById(R.id.imgvLoading); // Inicializar el ImageView para el GIF
         Button btnVerMapa = findViewById(R.id.btnVerMapa); // Inicializar el botón para ver mapa
+        Button btnPerfil = findViewById(R.id.btnPerfil); // Inicializar el botón para ver mapa
 
         // Obtener el username del Intent
         String username = getIntent().getStringExtra("username");
@@ -128,12 +129,24 @@ public class UserUI extends AppCompatActivity {
             }
         });
 
-        // Configurar el botón de ver mapa
+        // Configurar el botón verMapa
         if (username != null) {
             btnVerMapa.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent mapIntent = new Intent(UserUI.this, MapUIUser.class);
+                    mapIntent.putExtra("username", username); // Pasar el nombre de usuario
+                    startActivity(mapIntent);
+                }
+            });
+        }
+
+        // Configurar el botón perfil
+        if (username != null) {
+            btnPerfil.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mapIntent = new Intent(UserUI.this, PerfilUIUser.class);
                     mapIntent.putExtra("username", username); // Pasar el nombre de usuario
                     startActivity(mapIntent);
                 }
@@ -189,16 +202,18 @@ public class UserUI extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    // Ocultar el GIF de carga
-                                    if (imgvLoading != null) {
-                                        imgvLoading.setVisibility(View.GONE);
-                                    }
+                                    if (!isFinishing() && !isDestroyed()) {
+                                        // Ocultar el GIF de carga
+                                        if (imgvLoading != null) {
+                                            imgvLoading.setVisibility(View.GONE);
+                                        }
 
-                                    // Usar Glide para cargar la imagen en el ImageView con la transformación circular
-                                    Glide.with(UserUI.this)
-                                            .load(bitmap)
-                                            .apply(RequestOptions.circleCropTransform())
-                                            .into(imgvPerfil);
+                                        // Usar Glide para cargar la imagen en el ImageView con la transformación circular
+                                        Glide.with(UserUI.this)
+                                                .load(bitmap)
+                                                .apply(RequestOptions.circleCropTransform())
+                                                .into(imgvPerfil);
+                                    }
                                 }
                             });
                         } else {
@@ -284,44 +299,48 @@ public class UserUI extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
+        Glide.with(this).clear(imgvPerfil);
 
-        // Actualizar el estado del usuario a "logged_off" en el servidor
         String username = getIntent().getStringExtra("username");
         if (username != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        // URL del archivo PHP
-                        URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php"); // Cambia esta URL a la URL correcta
-                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                        connection.setRequestMethod("POST");
-                        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                        connection.setDoOutput(true);
-
-                        // Enviar el nombre de usuario al servidor
-                        String postData = "username=" + URLEncoder.encode(username, "UTF-8");
-                        OutputStream os = connection.getOutputStream();
-                        os.write(postData.getBytes());
-                        os.flush();
-                        os.close();
-
-                        // Leer la respuesta del servidor
-                        int responseCode = connection.getResponseCode();
-                        if (responseCode == HttpURLConnection.HTTP_OK) {
-                            // Éxito
-                        } else {
-                            // Error
-                        }
-
-                        connection.disconnect();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+            updateStatus(username);
         }
+    }
+
+    private void updateStatus(String username) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // URL del archivo PHP
+                    URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setDoOutput(true);
+
+                    // Enviar el nombre de usuario al servidor
+                    String postData = "username=" + URLEncoder.encode(username, "UTF-8");
+                    OutputStream os = connection.getOutputStream();
+                    os.write(postData.getBytes());
+                    os.flush();
+                    os.close();
+
+                    // Leer la respuesta del servidor
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        // Éxito
+                    } else {
+                        // Error
+                    }
+
+                    connection.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

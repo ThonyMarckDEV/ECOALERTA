@@ -4,7 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.ecoalerta.Interfaces.MapUI;
+import com.example.ecoalerta.Interfaces.MapUIBasurero;
 
 
 /**
@@ -22,11 +22,11 @@ public class LocationHelper {
         activity.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
     }
 
-    public static void handlePermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, MapUI activity) {
+    public static void handlePermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults, MapUIBasurero activity) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted
-                ((MapUI) activity).onLocationPermissionGranted();
+                ((MapUIBasurero) activity).onLocationPermissionGranted();
             }
         }
     }

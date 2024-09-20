@@ -56,7 +56,7 @@ public class LoginUI extends AppCompatActivity {
 
         // Inicializar campos de entrada y botones
         txtUsername = findViewById(R.id.txtUserNameLogin);
-        txtPassword = findViewById(R.id.txtPasswordLogin);
+        txtPassword = findViewById(R.id.txtNombresPerfil);
         Button btnLogin = findViewById(R.id.btnLogearse); // Asumiendo que este es el id del botón de inicio de sesión
         TextView lblNuevo = findViewById(R.id.lblNuevo);
 

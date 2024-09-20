@@ -58,6 +58,7 @@
         android:layout_height="51dp"
         android:backgroundTint="#63954C"
         android:drawableTint="#FFFFFF"
+        android:fontFamily="@font/adlam_display"
         android:text="Logearse"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
@@ -70,10 +71,11 @@
         app:layout_constraintVertical_bias="0.696" />
 
     <EditText
-        android:id="@+id/txtPasswordLogin"
+        android:id="@+id/txtNombresPerfil"
         android:layout_width="206dp"
         android:layout_height="44dp"
         android:background="@drawable/edittext_border"
+        android:fontFamily="@font/adlam_display"
         android:hint="Password"
         android:inputType="textPassword"
         android:textColor="#000000"
@@ -89,6 +91,7 @@
         android:layout_width="205dp"
         android:layout_height="44dp"
         android:background="@drawable/edittext_border"
+        android:fontFamily="@font/adlam_display"
         android:hint="Username"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
@@ -103,6 +106,7 @@
         android:id="@+id/lblNuevo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/adlam_display"
         android:text="Eres nuevo? Regístrate Aquí!!"
         android:textColor="#3764BF"
         app:layout_constraintBottom_toBottomOf="parent"

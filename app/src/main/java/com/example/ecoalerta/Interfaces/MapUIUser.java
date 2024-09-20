@@ -54,7 +54,7 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_ui);
+        setContentView(R.layout.activity_map_ui_basurero);
 
         // Obtener el nombre de usuario del Intent
         username = getIntent().getStringExtra("username");
@@ -111,6 +111,51 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
     protected void onPause() {
         super.onPause();
         mapView.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        String username = getIntent().getStringExtra("username");
+        if (username != null) {
+            updateStatus(username);
+        }
+    }
+
+    private void updateStatus(String username) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // URL del archivo PHP
+                    URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setDoOutput(true);
+
+                    // Enviar el nombre de usuario al servidor
+                    String postData = "username=" + URLEncoder.encode(username, "UTF-8");
+                    OutputStream os = connection.getOutputStream();
+                    os.write(postData.getBytes());
+                    os.flush();
+                    os.close();
+
+                    // Leer la respuesta del servidor
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        // Éxito
+                    } else {
+                        // Error
+                    }
+
+                    connection.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override

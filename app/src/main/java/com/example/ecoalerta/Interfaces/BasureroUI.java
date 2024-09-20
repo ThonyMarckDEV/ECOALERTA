@@ -13,9 +13,6 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -54,6 +51,7 @@ public class BasureroUI extends AppCompatActivity {
         imgvPerfil = findViewById(R.id.imgvPerfilBasurero);
         imgvLoading = findViewById(R.id.imgvLoadingBasurero); // Inicializar el ImageView para el GIF
         Button btnVerMapa = findViewById(R.id.btnVerMapaBasurero); // Inicializar el botón para ver mapa
+        Button btnPerfil = findViewById(R.id.btnPerfilBasurero); // Inicializar el botón para ver mapa
 
         // Obtener el username del Intent
         String username = getIntent().getStringExtra("username");
@@ -133,8 +131,20 @@ public class BasureroUI extends AppCompatActivity {
             btnVerMapa.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent mapIntent = new Intent(BasureroUI.this, MapUI.class);
+                    Intent mapIntent = new Intent(BasureroUI.this, MapUIBasurero.class);
                     mapIntent.putExtra("username", username);
+                    startActivity(mapIntent);
+                }
+            });
+        }
+
+        // Configurar el botón perfil
+        if (username != null) {
+            btnPerfil.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mapIntent = new Intent(BasureroUI.this, PerfilUIUser.class);
+                    mapIntent.putExtra("username", username); // Pasar el nombre de usuario
                     startActivity(mapIntent);
                 }
             });
@@ -314,6 +324,52 @@ public class BasureroUI extends AppCompatActivity {
 
                     // URL del archivo PHP
                     URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php"); // Cambia esta URL a la URL correcta
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setDoOutput(true);
+
+                    // Enviar el nombre de usuario al servidor
+                    String postData = "username=" + URLEncoder.encode(username, "UTF-8");
+                    OutputStream os = connection.getOutputStream();
+                    os.write(postData.getBytes());
+                    os.flush();
+                    os.close();
+
+                    // Leer la respuesta del servidor
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        // Éxito
+                    } else {
+                        // Error
+                    }
+
+                    connection.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Glide.with(this).clear(imgvPerfil);
+
+        String username = getIntent().getStringExtra("username");
+        if (username != null) {
+            updateStatus(username);
+        }
+    }
+
+    private void updateStatus(String username) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // URL del archivo PHP
+                    URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
