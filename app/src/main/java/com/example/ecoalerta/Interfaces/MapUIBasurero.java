@@ -46,7 +46,7 @@ public class MapUIBasurero extends AppCompatActivity implements OnMapReadyCallba
 
         //===================================================================================
         /**
-         * VERIRICADOR DE SESION CADA # SEGUNDOS
+         * VERIRICADOR DE SESION CADA 10 SEGUNDOS
          */
         // Crear instancia del verificador de estado
         EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
@@ -57,7 +57,7 @@ public class MapUIBasurero extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void run() {
                 verificador.verificarEstado();
-                handler.postDelayed(this, 3000); // Ejecutar cada 3 segundos
+                handler.postDelayed(this, 10000); // Ejecutar cada 3 segundos
             }
         };
         handler.post(runnable);

@@ -18,6 +18,15 @@
         android:theme="@style/Theme.ECOALERTA"
         tools:targetApi="31">
         <activity
+            android:name=".Interfaces.MunicipalidadContactUI"
+            android:exported="false" />
+        <activity
+            android:name=".Interfaces.FAQUI"
+            android:exported="false" />
+        <activity
+            android:name=".Interfaces.ReportarUI"
+            android:exported="false" />
+        <activity
             android:name=".Interfaces.PerfilUIBasurero"
             android:exported="false" />
         <activity

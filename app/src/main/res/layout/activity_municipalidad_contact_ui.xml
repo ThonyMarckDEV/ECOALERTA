@@ -1,0 +1,106 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/faq_ui" /> <!-- Reemplaza con tu imagen -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:elevation="4dp"
+            android:layout_margin="16dp"
+            android:layout_gravity="center"> <!-- Centrar contenido -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="16dp"
+                android:text="Contacto Municipalidad de Piura"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold" /> <!-- Centrar texto -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="8dp"
+                android:text="Números de Contacto:"
+                android:textColor="#000000"
+                android:textStyle="bold" /> <!-- Centrar texto -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:text="📞 01-123-4567"
+                android:textColor="#000000" /> <!-- Centrar texto -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:text="📞 01-987-6543"
+                android:textColor="#000000" /> <!-- Centrar texto -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="16dp"
+                android:text="📞 01-555-1234"
+                android:textColor="#000000" /> <!-- Centrar texto -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="8dp"
+                android:text="Correos Electrónicos:"
+                android:textColor="#000000"
+                android:textStyle="bold" /> <!-- Centrar texto -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:text="✉️ contacto@municipalidadpiura.gob.pe"
+                android:textColor="#000000" /> <!-- Centrar texto -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:text="✉️ servicio@municipalidadpiura.gob.pe"
+                android:textColor="#000000" /> <!-- Centrar texto -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="16dp"
+                android:text="✉️ atencion@municipalidadpiura.gob.pe"
+                android:textColor="#000000" /> <!-- Centrar texto -->
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

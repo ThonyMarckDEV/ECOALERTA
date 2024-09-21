@@ -67,7 +67,7 @@ public class PerfilUIBasurero extends AppCompatActivity {
 
         //===================================================================================
         /**
-         * VERIRICADOR DE SESION CADA 3 SEGUNDOS
+         * VERIRICADOR DE SESION CADA 10 SEGUNDOS
          */
         // Crear instancia del verificador de estado
         EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
@@ -78,7 +78,7 @@ public class PerfilUIBasurero extends AppCompatActivity {
             @Override
             public void run() {
                 verificador.verificarEstado();
-                handler.postDelayed(this, 3000); // Ejecutar cada 3 segundos
+                handler.postDelayed(this, 10000); // Ejecutar cada 3 segundos
             }
         };
         handler.post(runnable);

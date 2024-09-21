@@ -37,6 +37,29 @@ public class LoginUI extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
+        cargaIntent = new Intent(LoginUI.this, CargaUI.class);
+
+        // Referencias a los ImageView
+        ImageView gifImageView1 = findViewById(R.id.gifImageView1);
+        ImageView gifImageView2 = findViewById(R.id.gifImageView2);
+        ImageView gifImageView3 = findViewById(R.id.gifImageView3);
+        ImageView gifImageView4 = findViewById(R.id.gifImageView4);
+        ImageView gifImageView5 = findViewById(R.id.gifImageView5);
+
+        // Cargar el GIF en cada ImageView usando Glide
+        Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView1);
+        Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView2);
+        Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView3);
+        Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView4);
+        Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView5);
+
+        // Inicializar campos de entrada y botones
+        txtUsername = findViewById(R.id.txtUserNameLogin);
+        txtPassword = findViewById(R.id.txtNombresPerfil);
+        Button btnLogin = findViewById(R.id.btnLogearse);
+        TextView lblNuevo = findViewById(R.id.lblNuevo);
+
+
         // Verificar si ya hay un username guardado en SharedPreferences
         SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String savedUsername = preferences.getString("username", null);
@@ -46,27 +69,6 @@ public class LoginUI extends AppCompatActivity {
             verificarRol(savedUsername);
         } else {
             // Inicializar la Intent para la pantalla de carga
-            cargaIntent = new Intent(LoginUI.this, CargaUI.class);
-
-            // Referencias a los ImageView
-            ImageView gifImageView1 = findViewById(R.id.gifImageView1);
-            ImageView gifImageView2 = findViewById(R.id.gifImageView2);
-            ImageView gifImageView3 = findViewById(R.id.gifImageView3);
-            ImageView gifImageView4 = findViewById(R.id.gifImageView4);
-            ImageView gifImageView5 = findViewById(R.id.gifImageView5);
-
-            // Cargar el GIF en cada ImageView usando Glide
-            Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView1);
-            Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView2);
-            Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView3);
-            Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView4);
-            Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView5);
-
-            // Inicializar campos de entrada y botones
-            txtUsername = findViewById(R.id.txtUserNameLogin);
-            txtPassword = findViewById(R.id.txtNombresPerfil);
-            Button btnLogin = findViewById(R.id.btnLogearse); // Asumiendo que este es el id del botón de inicio de sesión
-            TextView lblNuevo = findViewById(R.id.lblNuevo);
 
             btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -80,8 +82,8 @@ public class LoginUI extends AppCompatActivity {
                         return;
                     }
 
-                    // Ejecutar el LoginTask con las credenciales
-                    new LoginTask().execute(username, password);
+                    // Ejecutar la tarea de verificación de estado
+                    new CheckUserStatusTask().execute(username);
                 }
             });
 
@@ -92,6 +94,68 @@ public class LoginUI extends AppCompatActivity {
                 }
             });
         }
+    }
+    //METOOD OBTENER ESTADO DEL SERVER
+    // Clase para verificar el estado del usuario
+    private class CheckUserStatusTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            return getStatusFromServer(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            try {
+                JSONObject jsonResponse = new JSONObject(result);
+                String status = jsonResponse.getString("status");
+
+                if (status.equals("loggedOn")) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(LoginUI.this, "USUARIO YA LOGEADO!!!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    // Si no está logueado, proceder con el LoginTask
+                    String username = txtUsername.getText().toString();
+                    String password = txtPassword.getText().toString();
+                    new LoginTask().execute(username, password);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(LoginUI.this, "Error al verificar el estado del usuario", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    }
+
+    // Método para obtener el estado del servidor
+    private String getStatusFromServer(String username) {
+        String response = "";
+
+        try {
+            URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/get_user_status.php?username=" + URLEncoder.encode(username, "UTF-8"));
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+
+            InputStream is = connection.getInputStream();
+            Scanner scanner = new Scanner(is).useDelimiter("\\A");
+            response = scanner.hasNext() ? scanner.next() : "";
+            scanner.close();
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "{\"status\": \"error\", \"message\": \"" + e.getMessage() + "\"}";
+        }
+
+        return response;
     }
 
     // Método para verificar el rol del usuario guardado y redirigir

@@ -50,7 +50,7 @@ public class PerfilUIUser extends AppCompatActivity {
     private EditText txtNombres, txtApellidos, txtCorreo;
     private ImageView imgvPerfil;
     private ImageView imgvLoading;
-    private Button btnEditarCorreo, btnEditarNombres, btnEditarApellidos, btnActualizaPerfil;
+    private Button btnEditarCorreo, btnEditarNombres, btnEditarApellidos, btnActualizaPerfil,btnfaq;
 
     // Variables para controlar la editabilidad de los campos
     private boolean isEmailEditable = false;
@@ -65,7 +65,7 @@ public class PerfilUIUser extends AppCompatActivity {
 
         //===================================================================================
         /**
-         * VERIRICADOR DE SESION CADA # SEGUNDOS
+         * VERIRICADOR DE SESION CADA 10 SEGUNDOS
          */
         // Crear instancia del verificador de estado
         EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
@@ -76,7 +76,7 @@ public class PerfilUIUser extends AppCompatActivity {
             @Override
             public void run() {
                 verificador.verificarEstado();
-                handler.postDelayed(this, 3000); // Ejecutar cada 3 segundos
+                handler.postDelayed(this, 10000); // Ejecutar cada 3 segundos
             }
         };
         handler.post(runnable);
@@ -96,7 +96,7 @@ public class PerfilUIUser extends AppCompatActivity {
         btnEditarNombres = findViewById(R.id.btnEditarNombres);
         btnEditarApellidos = findViewById(R.id.btnEditarApellidos);
         btnActualizaPerfil = findViewById(R.id.btnActualizaPerfil);
-
+        btnfaq = findViewById(R.id.btnFAQ);
 //===================================================================================
         // Usar CLASE PerfilImagenLoader para cargar la imagen de perfil
         /**
@@ -165,6 +165,18 @@ public class PerfilUIUser extends AppCompatActivity {
             ActualizarDatosUser.actualizarDatos(PerfilUIUser.this, username, nombres, apellidos, correo);
         });
         //===================================================================================
+
+        // Configurar el botón reporte
+        if (username != null) {
+            btnfaq.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mapIntent = new Intent(PerfilUIUser.this, FAQUI.class);
+                    startActivity(mapIntent);
+                }
+            });
+        }
+
     }
 
     public void setFieldsEditable(boolean editable) {

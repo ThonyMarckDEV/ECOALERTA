@@ -61,4 +61,7 @@ dependencies {
     implementation ("com.android.volley:volley:1.2.1");
     //PLAY SERVICES
     implementation ("com.google.android.gms:play-services-location:19.1.0");
+    //
+    // Dependencia de OkHttp
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3");
 }

@@ -48,7 +48,7 @@ public class UserUI extends AppCompatActivity {
 
         //===================================================================================
         /**
-         * VERIRICADOR DE SESION CADA 3 SEGUNDOS
+         * VERIRICADOR DE SESION CADA 10 SEGUNDOS
          */
         // Crear instancia del verificador de estado
         EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
@@ -59,7 +59,7 @@ public class UserUI extends AppCompatActivity {
             @Override
             public void run() {
                 verificador.verificarEstado();
-                handler.postDelayed(this, 3000); // Ejecutar cada 3 segundos
+                handler.postDelayed(this, 10000); // Ejecutar cada 3 segundos
             }
         };
         handler.post(runnable);
@@ -72,6 +72,8 @@ public class UserUI extends AppCompatActivity {
         imgvLoading = findViewById(R.id.imgvLoading); // Inicializar el ImageView para el GIF
         Button btnVerMapa = findViewById(R.id.btnVerMapa); // Inicializar el botón para ver mapa
         Button btnPerfil = findViewById(R.id.btnPerfil); // Inicializar el botón para ver mapa
+        Button btnReporte = findViewById(R.id.btnReporte); // Inicializar el botón para ver mapa
+        Button btnContactoMuni = findViewById(R.id.btnContactoMuni); // Inicializar el botón para contactomuni
 
         // Obtener el username del Intent
         String username = getIntent().getStringExtra("username");
@@ -178,6 +180,29 @@ public class UserUI extends AppCompatActivity {
             });
         }
 
+        // Configurar el botón reporte
+        if (username != null) {
+            btnReporte.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mapIntent = new Intent(UserUI.this, ReportarUI.class);
+                    mapIntent.putExtra("username", username); // Pasar el nombre de usuario
+                    startActivity(mapIntent);
+                }
+            });
+        }
+
+        // Configurar el botón contacto muni
+        if (username != null) {
+            btnContactoMuni.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mapIntent = new Intent(UserUI.this, MunicipalidadContactUI.class);
+                    mapIntent.putExtra("username", username); // Pasar el nombre de usuario
+                    startActivity(mapIntent);
+                }
+            });
+        }
     }
 
     @Override

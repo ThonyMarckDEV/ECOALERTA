@@ -1,0 +1,229 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/faq_ui" /> <!-- Reemplaza con tu imagen -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="644dp"
+        android:layout_centerInParent="true"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="#FFFFFF"
+            android:clipToPadding="false"
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="FAQ - ECOALERTA"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="4dp"
+                android:text="1. ¿Qué es ECOALERTA?"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="ECOALERTA es una aplicación diseñada para ayudar a los usuarios a gestionar su perfil, visualizar el mapa de los camiones de basura, consultar un calendario de recolección, hacer reportes de incidencias y conectarse con la municipalidad de Piura."
+                android:textColor="#000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="4dp"
+                android:text="2. ¿Cómo puedo ver mi perfil?"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="Para ver tu perfil, abre la aplicación y selecciona la opción 'Perfil' en el menú principal. Allí podrás ver tu información personal y las opciones para editarla."
+                android:textColor="#000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="4dp"
+                android:text="3. ¿Puedo editar mi perfil?"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="Sí, puedes editar tu perfil. Ve a la sección 'Perfil', selecciona 'Editar' y realiza los cambios que desees. No olvides guardar los cambios antes de salir."
+                android:textColor="#000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="4dp"
+                android:text="4. ¿Dónde puedo ver el mapa de los camiones de basura?"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="Puedes encontrar el mapa en la sección 'Mapa' del menú principal. Allí podrás ver la ubicación actual de los camiones de basura y su ruta de recolección."
+                android:textColor="#000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="4dp"
+                android:text="5. ¿Cómo puedo ver el calendario de recolección?"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="El calendario está disponible en la sección 'Calendario'. Aquí podrás consultar las fechas y horarios de recolección en tu área."
+                android:textColor="#000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="4dp"
+                android:text="6. ¿Cómo hago un reporte?"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="Para hacer un reporte, dirígete a la sección 'Reportes', completa el formulario con la información requerida y adjunta fotos si es necesario. Luego, envía el reporte para que sea revisado por la municipalidad."
+                android:textColor="#000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="4dp"
+                android:text="7. ¿Cómo puedo conectarme con la municipalidad de Piura?"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="Puedes contactar a la municipalidad a través de los números telefónicos proporcionados en la sección 'Contacto'. Selecciona la opción para ver los números y no dudes en llamar para cualquier consulta o incidencia."
+                android:textColor="#000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="4dp"
+                android:text="8. ¿Es necesario crear una cuenta para usar ECOALERTA?"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="Sí, es necesario crear una cuenta para acceder a todas las funcionalidades de la aplicación. Puedes registrarte fácilmente desde la pantalla de inicio."
+                android:textColor="#000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="4dp"
+                android:text="9. ¿Qué hago si tengo problemas técnicos con la app?"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="Si experimentas problemas técnicos, verifica que estés usando la última versión de la aplicación. Si el problema persiste, puedes contactar al soporte técnico a través de la sección 'Ayuda' en la app."
+                android:textColor="#000000"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="4dp"
+                android:text="10. ¿La aplicación es gratuita?"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/adlam_display"
+                android:paddingBottom="16dp"
+                android:text="Sí, ECOALERTA es completamente gratuita para todos los usuarios."
+                android:textColor="#000000"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

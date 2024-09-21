@@ -1,5 +1,6 @@
 package com.example.ecoalerta.Interfaces;
 
+import android.app.ProgressDialog;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -25,6 +26,12 @@ public class ActualizarDatosBasurero {
             return;
         }
 
+        // Crear y mostrar el ProgressDialog
+        ProgressDialog progressDialog = new ProgressDialog(perfilUIBasurero);
+        progressDialog.setMessage("Actualizando datos...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         RequestQueue requestQueue = Volley.newRequestQueue(perfilUIBasurero);
         String url = "https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_profile.php";
 
@@ -32,6 +39,7 @@ public class ActualizarDatosBasurero {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        progressDialog.dismiss(); // Cerrar el ProgressDialog
                         Log.d("Response", response);
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
@@ -50,7 +58,8 @@ public class ActualizarDatosBasurero {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(perfilUIBasurero, "Perfil Actualizado Correctamente!!!", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss(); // Cerrar el ProgressDialog
+                        Toast.makeText(perfilUIBasurero, "Perfil actualizado correctamente!!!", Toast.LENGTH_SHORT).show();
                         perfilUIBasurero.setFieldsEditable(false); // Llamar al método en el objeto correcto
                     }
                 }) {
