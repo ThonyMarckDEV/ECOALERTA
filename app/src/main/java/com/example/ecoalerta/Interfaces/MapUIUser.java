@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.ecoalerta.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -56,6 +57,25 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_ui_basurero);
 
+        //===================================================================================
+        /**
+         * VERIRICADOR DE SESION CADA # SEGUNDOS
+         */
+        // Crear instancia del verificador de estado
+        EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
+
+        // Iniciar el ciclo de verificación del estado del usuario
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                verificador.verificarEstado();
+                handler.postDelayed(this, 3000); // Ejecutar cada 3 segundos
+            }
+        };
+        handler.post(runnable);
+        //===================================================================================
+
         // Obtener el nombre de usuario del Intent
         username = getIntent().getStringExtra("username");
 
@@ -71,7 +91,7 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
         proximitySoundPlayer.setLooping(true); // Set looping to true
 
         // Update location every 3 seconds
-        final Handler handler = new Handler();
+        final Handler handlerubi = new Handler();
         final Runnable updateLocationTask = new Runnable() {
             @Override
             public void run() {
@@ -82,7 +102,7 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
                 handler.postDelayed(this, 3000); // Update every 3 seconds
             }
         };
-        handler.post(updateLocationTask);
+        handlerubi.post(updateLocationTask);
     }
 
     @Override
@@ -111,101 +131,6 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
     protected void onPause() {
         super.onPause();
         mapView.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        String username = getIntent().getStringExtra("username");
-        if (username != null) {
-            updateStatus(username);
-        }
-    }
-
-    private void updateStatus(String username) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // URL del archivo PHP
-                    URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php");
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
-
-                    // Enviar el nombre de usuario al servidor
-                    String postData = "username=" + URLEncoder.encode(username, "UTF-8");
-                    OutputStream os = connection.getOutputStream();
-                    os.write(postData.getBytes());
-                    os.flush();
-                    os.close();
-
-                    // Leer la respuesta del servidor
-                    int responseCode = connection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        // Éxito
-                    } else {
-                        // Error
-                    }
-
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-        if (proximitySoundPlayer != null) {
-            if (proximitySoundPlayer.isPlaying()) {
-                proximitySoundPlayer.stop();
-            }
-            proximitySoundPlayer.release();
-            proximitySoundPlayer = null;
-        }
-
-        // Actualizar el estado del usuario a "logged_off" en el servidor
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // Obtener el nombre de usuario del Intent
-                    String username = getIntent().getStringExtra("username");
-
-                    // URL del archivo PHP
-                    URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php"); // Cambia esta URL a la URL correcta
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
-
-                    // Enviar el nombre de usuario al servidor
-                    String postData = "username=" + URLEncoder.encode(username, "UTF-8");
-                    OutputStream os = connection.getOutputStream();
-                    os.write(postData.getBytes());
-                    os.flush();
-                    os.close();
-
-                    // Leer la respuesta del servidor
-                    int responseCode = connection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        // Éxito
-                    } else {
-                        // Error
-                    }
-
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     @Override
@@ -374,10 +299,8 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
                 intent.putExtra("username", userName);
 
                 startActivity(intent);
-                finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
             }
         }, 500); // Esperar 500 ms antes de iniciar UserUI
     }
-
 
 }

@@ -6,6 +6,7 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.ecoalerta.Clases.LocationHelper;
 import com.example.ecoalerta.Clases.LocationService;
 import com.example.ecoalerta.R;
@@ -42,6 +43,25 @@ public class MapUIBasurero extends AppCompatActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_ui_basurero);
+
+        //===================================================================================
+        /**
+         * VERIRICADOR DE SESION CADA # SEGUNDOS
+         */
+        // Crear instancia del verificador de estado
+        EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
+
+        // Iniciar el ciclo de verificación del estado del usuario
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                verificador.verificarEstado();
+                handler.postDelayed(this, 3000); // Ejecutar cada 3 segundos
+            }
+        };
+        handler.post(runnable);
+        //===================================================================================
 
         // Obtener el username del Intent
         username = getIntent().getStringExtra("username");
@@ -102,56 +122,6 @@ public class MapUIBasurero extends AppCompatActivity implements OnMapReadyCallba
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        locationService.stopLocationUpdates(); // Detener actualizaciones al destruir la actividad
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        String username = getIntent().getStringExtra("username");
-        if (username != null) {
-            updateStatus(username);
-        }
-    }
-
-    private void updateStatus(String username) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // URL del archivo PHP
-                    URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php");
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
-
-                    // Enviar el nombre de usuario al servidor
-                    String postData = "username=" + URLEncoder.encode(username, "UTF-8");
-                    OutputStream os = connection.getOutputStream();
-                    os.write(postData.getBytes());
-                    os.flush();
-                    os.close();
-
-                    // Leer la respuesta del servidor
-                    int responseCode = connection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        // Éxito
-                    } else {
-                        // Error
-                    }
-
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    @Override
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
@@ -189,5 +159,11 @@ public class MapUIBasurero extends AppCompatActivity implements OnMapReadyCallba
                 finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
             }
         }, 500); // Esperar 500 ms antes de iniciar UserUI
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        locationService.stopLocationUpdates(); // Detener actualizaciones al destruir la actividad
     }
 }

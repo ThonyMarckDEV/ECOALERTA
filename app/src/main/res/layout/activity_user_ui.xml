@@ -107,7 +107,7 @@
         android:layout_width="179dp"
         android:layout_height="180dp"
         android:layout_marginStart="7dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="9dp"
         android:layout_marginEnd="2dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
@@ -115,7 +115,7 @@
         app:layout_constraintHorizontal_bias="0.453"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.110000014" />
+        app:layout_constraintVertical_bias="0.100000024" />
 
     <!-- GIF de carga -->
     <ImageView
@@ -129,7 +129,32 @@
         app:layout_constraintHorizontal_bias="0.455"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.092" /> <!-- Nombre del archivo GIF en res/drawable -->
+        app:layout_constraintVertical_bias="0.092" />
+
+    <Button
+        android:id="@+id/btnReportar"
+        android:layout_width="57dp"
+        android:layout_height="50dp"
+        android:backgroundTint="#00FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.124"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.063" /> <!-- Nombre del archivo GIF en res/drawable -->
+
+    <Button
+        android:id="@+id/btnContactoMuni"
+        android:layout_width="57dp"
+        android:layout_height="50dp"
+        android:backgroundTint="#00FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.864"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.063" /> <!-- Nombre del archivo GIF en res/drawable -->
+
 
 
 

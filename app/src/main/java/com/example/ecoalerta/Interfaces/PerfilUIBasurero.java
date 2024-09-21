@@ -16,6 +16,9 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,13 +47,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class PerfilUIUser extends AppCompatActivity {
+public class PerfilUIBasurero extends AppCompatActivity {
 
     private String username;
-    private EditText txtNombres, txtApellidos, txtCorreo;
-    private ImageView imgvPerfil;
-    private ImageView imgvLoading;
-    private Button btnEditarCorreo, btnEditarNombres, btnEditarApellidos, btnActualizaPerfil;
+    private EditText txtNombresBasurero, txtApellidosBasurero, txtCorreoBasurero;
+    private ImageView imgvPerfilBasurero;
+    private ImageView imgvLoadingBasurero;
+    private Button btnEditarCorreoBasurero, btnEditarNombresBasurero, btnEditarApellidosBasurero, btnActualizaPerfilBasurero;
 
     // Variables para controlar la editabilidad de los campos
     private boolean isEmailEditable = false;
@@ -60,12 +63,11 @@ public class PerfilUIUser extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_perfil_ui_user);
+        setContentView(R.layout.activity_perfil_ui_basurero);
 
         //===================================================================================
         /**
-         * VERIRICADOR DE SESION CADA # SEGUNDOS
+         * VERIRICADOR DE SESION CADA 3 SEGUNDOS
          */
         // Crear instancia del verificador de estado
         EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
@@ -86,23 +88,23 @@ public class PerfilUIUser extends AppCompatActivity {
         username = getIntent().getStringExtra("username");
 
         // Referencias a los campos EditText y otros elementos
-        txtCorreo = findViewById(R.id.txtCorreoPerfil);
-        txtNombres = findViewById(R.id.txtNombresPerfil);
-        txtApellidos = findViewById(R.id.txtApellidosPerfil);
-        imgvPerfil = findViewById(R.id.imgvPerfil);
-        imgvLoading = findViewById(R.id.imgvLoading);
+        txtCorreoBasurero = findViewById(R.id.txtCorreoPerfilBasurero);
+        txtNombresBasurero = findViewById(R.id.txtNombresPerfilBasurero);
+        txtApellidosBasurero = findViewById(R.id.txtApellidosPerfilBasurero);
+        imgvPerfilBasurero = findViewById(R.id.imgvPerfilBasurero);
+        imgvLoadingBasurero = findViewById(R.id.imgvLoadingBasurero);
 
-        btnEditarCorreo = findViewById(R.id.btnEditarCorreo);
-        btnEditarNombres = findViewById(R.id.btnEditarNombres);
-        btnEditarApellidos = findViewById(R.id.btnEditarApellidos);
-        btnActualizaPerfil = findViewById(R.id.btnActualizaPerfil);
+        btnEditarCorreoBasurero = findViewById(R.id.btnEditarCorreoBasurero);
+        btnEditarNombresBasurero = findViewById(R.id.btnEditarNombresBasurero);
+        btnEditarApellidosBasurero = findViewById(R.id.btnEditarApellidosBasurero);
+        btnActualizaPerfilBasurero = findViewById(R.id.btnActualizaPerfilBasurero);
 
 //===================================================================================
         // Usar CLASE PerfilImagenLoader para cargar la imagen de perfil
         /**
          * SE USO LA CLASE PerfilImagenLoader PARA CARGAR LA FOTO
          */
-        PerfilImagenLoader perfilLoader = new PerfilImagenLoader(this, imgvLoading, imgvPerfil);
+        PerfilImagenLoader perfilLoader = new PerfilImagenLoader(this, imgvLoadingBasurero, imgvPerfilBasurero);
         perfilLoader.cargarImagen(username);
 //===================================================================================
 
@@ -112,43 +114,43 @@ public class PerfilUIUser extends AppCompatActivity {
         /**
          * SE USO LA CLASE ObtenerProfileTask PARA CARGAR LA FOTO
          */
-        new ObtenerProfileTask(txtNombres, txtApellidos, txtCorreo).execute(username);
+        new ObtenerProfileTask(txtNombresBasurero, txtApellidosBasurero, txtCorreoBasurero).execute(username);
 //===================================================================================
 
 // Deshabilitar los campos al inicio
         setFieldsEditable(false);
 
 // Hacer los campos editables o no al presionar los botones correspondientes
-        btnEditarCorreo.setOnClickListener(new View.OnClickListener() {
+        btnEditarCorreoBasurero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isEmailEditable = !isEmailEditable; // Alternar el estado
-                txtCorreo.setEnabled(isEmailEditable); // Habilitar o deshabilitar campo de correo
+                txtCorreoBasurero.setEnabled(isEmailEditable); // Habilitar o deshabilitar campo de correo
             }
         });
 
-        btnEditarNombres.setOnClickListener(new View.OnClickListener() {
+        btnEditarNombresBasurero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 areNamesEditable = !areNamesEditable; // Alternar el estado
-                txtNombres.setEnabled(areNamesEditable); // Habilitar o deshabilitar campo de nombres
+                txtNombresBasurero.setEnabled(areNamesEditable); // Habilitar o deshabilitar campo de nombres
             }
         });
 
-        btnEditarApellidos.setOnClickListener(new View.OnClickListener() {
+        btnEditarApellidosBasurero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 areSurnamesEditable = !areSurnamesEditable; // Alternar el estado
-                txtApellidos.setEnabled(areSurnamesEditable); // Habilitar o deshabilitar campo de apellidos
+                txtApellidosBasurero.setEnabled(areSurnamesEditable); // Habilitar o deshabilitar campo de apellidos
             }
         });
 
         // Mostrar el GIF de carga
-        if (imgvLoading != null) {
+        if (imgvLoadingBasurero != null) {
             Glide.with(this)
                     .asGif()
                     .load(R.drawable.loadingperfil)
-                    .into(imgvLoading);
+                    .into(imgvLoadingBasurero);
         }
 
         //===================================================================================
@@ -157,21 +159,22 @@ public class PerfilUIUser extends AppCompatActivity {
          * SE USO LA CLASE actualizarDatos PARA ACTUALIZAR DATOS DE LOS TXT
          */
         // Actualizar perfil al hacer clic en el botón de actualizar
-        btnActualizaPerfil.setOnClickListener(view -> {
-            String nombres = txtNombres.getText().toString();
-            String apellidos = txtApellidos.getText().toString();
-            String correo = txtCorreo.getText().toString();
+        btnActualizaPerfilBasurero.setOnClickListener(view -> {
+            String nombres = txtNombresBasurero.getText().toString();
+            String apellidos = txtApellidosBasurero.getText().toString();
+            String correo = txtCorreoBasurero.getText().toString();
             setFieldsEditable(false);
-            ActualizarDatosUser.actualizarDatos(PerfilUIUser.this, username, nombres, apellidos, correo);
+            ActualizarDatosBasurero.actualizarDatos(PerfilUIBasurero.this, username, nombres, apellidos, correo);
         });
         //===================================================================================
     }
 
     public void setFieldsEditable(boolean editable) {
-        txtNombres.setEnabled(editable);
-        txtApellidos.setEnabled(editable);
-        txtCorreo.setEnabled(editable);
+        txtNombresBasurero.setEnabled(editable);
+        txtApellidosBasurero.setEnabled(editable);
+        txtCorreoBasurero.setEnabled(editable);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -181,13 +184,13 @@ public class PerfilUIUser extends AppCompatActivity {
 
     private void redirigir() {
         // Iniciar la actividad de carga
-        Intent cargaIntent = new Intent(PerfilUIUser.this, CargaUI.class);
+        Intent cargaIntent = new Intent(PerfilUIBasurero.this, CargaUI.class);
         startActivity(cargaIntent);
 
         // Usar un Handler para esperar un breve periodo y luego redirigir
         new Handler().postDelayed(() -> {
             // Crear la intención para redirigir a UserUI
-            Intent intent = new Intent(PerfilUIUser.this, UserUI.class); // Clase para el rol Usuario
+            Intent intent = new Intent(PerfilUIBasurero.this, UserUI.class); // Clase para el rol Usuario
 
             // Agregar el username como extra
             intent.putExtra("username", username);
@@ -197,4 +200,5 @@ public class PerfilUIUser extends AppCompatActivity {
             finish();
         }, 2000); // Esperar 2000 ms (2 segundos)
     }
+
 }

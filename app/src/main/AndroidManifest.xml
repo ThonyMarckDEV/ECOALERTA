@@ -18,6 +18,9 @@
         android:theme="@style/Theme.ECOALERTA"
         tools:targetApi="31">
         <activity
+            android:name=".Interfaces.PerfilUIBasurero"
+            android:exported="false" />
+        <activity
             android:name=".Interfaces.PerfilUIUser"
             android:exported="false" />
         <!--

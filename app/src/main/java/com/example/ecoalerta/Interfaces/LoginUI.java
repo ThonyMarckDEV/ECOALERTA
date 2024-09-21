@@ -37,67 +37,118 @@ public class LoginUI extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-        // Inicializar la Intent para la pantalla de carga
-        cargaIntent = new Intent(LoginUI.this, CargaUI.class);
+        // Verificar si ya hay un username guardado en SharedPreferences
+        SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String savedUsername = preferences.getString("username", null);
 
-        // Referencias a los ImageView
-        ImageView gifImageView1 = findViewById(R.id.gifImageView1);
-        ImageView gifImageView2 = findViewById(R.id.gifImageView2);
-        ImageView gifImageView3 = findViewById(R.id.gifImageView3);
-        ImageView gifImageView4 = findViewById(R.id.gifImageView4);
-        ImageView gifImageView5 = findViewById(R.id.gifImageView5);
+        if (savedUsername != null) {
+            // Hay un username guardado, redirigir a la interfaz correspondiente
+            verificarRol(savedUsername);
+        } else {
+            // Inicializar la Intent para la pantalla de carga
+            cargaIntent = new Intent(LoginUI.this, CargaUI.class);
 
-        // Cargar el GIF en cada ImageView usando Glide
-        Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView1);
-        Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView2);
-        Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView3);
-        Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView4);
-        Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView5);
+            // Referencias a los ImageView
+            ImageView gifImageView1 = findViewById(R.id.gifImageView1);
+            ImageView gifImageView2 = findViewById(R.id.gifImageView2);
+            ImageView gifImageView3 = findViewById(R.id.gifImageView3);
+            ImageView gifImageView4 = findViewById(R.id.gifImageView4);
+            ImageView gifImageView5 = findViewById(R.id.gifImageView5);
 
-        // Inicializar campos de entrada y botones
-        txtUsername = findViewById(R.id.txtUserNameLogin);
-        txtPassword = findViewById(R.id.txtNombresPerfil);
-        Button btnLogin = findViewById(R.id.btnLogearse); // Asumiendo que este es el id del botón de inicio de sesión
-        TextView lblNuevo = findViewById(R.id.lblNuevo);
+            // Cargar el GIF en cada ImageView usando Glide
+            Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView1);
+            Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView2);
+            Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView3);
+            Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView4);
+            Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView5);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = txtUsername.getText().toString();
-                String password = txtPassword.getText().toString();
+            // Inicializar campos de entrada y botones
+            txtUsername = findViewById(R.id.txtUserNameLogin);
+            txtPassword = findViewById(R.id.txtNombresPerfil);
+            Button btnLogin = findViewById(R.id.btnLogearse); // Asumiendo que este es el id del botón de inicio de sesión
+            TextView lblNuevo = findViewById(R.id.lblNuevo);
 
-                // Validar campos de entrada
-                if (username.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(LoginUI.this, "Por favor ingrese ambos campos", Toast.LENGTH_LONG).show();
-                    return;
+            btnLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String username = txtUsername.getText().toString();
+                    String password = txtPassword.getText().toString();
+
+                    // Validar campos de entrada
+                    if (username.isEmpty() || password.isEmpty()) {
+                        Toast.makeText(LoginUI.this, "Por favor ingrese ambos campos", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    // Ejecutar el LoginTask con las credenciales
+                    new LoginTask().execute(username, password);
                 }
+            });
 
-                // Ejecutar el LoginTask con las credenciales
-                new LoginTask().execute(username, password);
-            }
-        });
+            lblNuevo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    irRegister();
+                }
+            });
+        }
+    }
 
-        lblNuevo.setOnClickListener(new View.OnClickListener() {
+    // Método para verificar el rol del usuario guardado y redirigir
+    private void verificarRol(String username) {
+        // Aquí puedes realizar la lógica para determinar el rol del usuario desde SharedPreferences o alguna otra fuente
+        String rol = "Usuario"; // Asumimos que has guardado o puedes obtener el rol de alguna manera
+
+        Intent intent;
+        switch (rol) {
+            case "Usuario":
+                intent = new Intent(LoginUI.this, UserUI.class);
+                break;
+            case "Admin":
+                intent = new Intent(LoginUI.this, AdminUI.class);
+                break;
+            case "Basurero":
+                intent = new Intent(LoginUI.this, BasureroUI.class);
+                break;
+            default:
+                Toast.makeText(LoginUI.this, "Rol desconocido", Toast.LENGTH_LONG).show();
+                return;
+        }
+
+        // Pasar el nombre de usuario a la siguiente interfaz
+        intent.putExtra("username", username);
+        startActivity(intent);
+        finish(); // Cerrar la actividad actual
+    }
+
+
+    private void irRegister() {
+        // Mostrar la pantalla de carga antes de iniciar RegisterUI
+        startActivity(cargaIntent);
+
+        // Usar Handler para retrasar el inicio de la nueva actividad y permitir que la pantalla de carga se muestre
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
-                irRegister();
+            public void run() {
+                Intent intent = new Intent(LoginUI.this, RegisterUI.class);
+                startActivity(intent);
+                finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
             }
-        });
+        }, 500); // Esperar 500 ms antes de iniciar RegisterUI
     }
 
     private class LoginTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // Mostrar la pantalla de carga
-            startActivity(cargaIntent);
+            startActivity(cargaIntent);  // Mostrar la pantalla de carga
         }
 
         @Override
         protected String doInBackground(String... params) {
             String username = params[0];
             String password = params[1];
-
+            // Aquí va tu código de conexión HTTP
             try {
                 URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/login.php");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -106,7 +157,6 @@ public class LoginUI extends AppCompatActivity {
                 connection.setDoInput(true);
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-                // Enviar las credenciales al servidor
                 String postData = "username=" + URLEncoder.encode(username, "UTF-8") +
                         "&password=" + URLEncoder.encode(password, "UTF-8");
                 OutputStream os = connection.getOutputStream();
@@ -114,19 +164,13 @@ public class LoginUI extends AppCompatActivity {
                 os.flush();
                 os.close();
 
-                // Leer la respuesta del servidor
                 InputStream is = connection.getInputStream();
                 Scanner scanner = new Scanner(is).useDelimiter("\\A");
                 String response = scanner.hasNext() ? scanner.next() : "";
                 scanner.close();
                 is.close();
 
-                // Imprimir respuesta para depuración
-                System.out.println("Server Response: " + response);
-
-                // Limpiar la respuesta si es necesario
                 if (response.startsWith("Conexion Exitosa")) {
-                    // Extraer solo el JSON de la respuesta
                     response = response.substring(response.indexOf("{"));
                 }
 
@@ -140,17 +184,13 @@ public class LoginUI extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
             try {
-                // Intenta parsear la respuesta como JSON
                 JSONObject jsonResponse = new JSONObject(result);
-
                 String status = jsonResponse.getString("status");
                 if (status.equals("success")) {
                     String rol = jsonResponse.getString("rol");
                     String username = jsonResponse.getString("username");
 
-                    // Guardar el nombre de usuario en SharedPreferences
                     SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("username", username);
@@ -172,13 +212,10 @@ public class LoginUI extends AppCompatActivity {
                             return;
                     }
 
-                    // Pasar el nombre de usuario a la siguiente interfaz
                     intent.putExtra("username", username);
                     startActivity(intent);
-                    finish(); // Cerrar la actividad actual
-
+                    finish();
                 } else {
-                    // Mostrar error si las credenciales son incorrectas
                     Toast.makeText(LoginUI.this, jsonResponse.getString("message"), Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
@@ -186,21 +223,12 @@ public class LoginUI extends AppCompatActivity {
                 Toast.makeText(LoginUI.this, "Error al procesar la respuesta: " + result, Toast.LENGTH_LONG).show();
             }
         }
-
     }
 
-    private void irRegister() {
-        // Mostrar la pantalla de carga antes de iniciar RegisterUI
-        startActivity(cargaIntent);
 
-        // Usar Handler para retrasar el inicio de la nueva actividad y permitir que la pantalla de carga se muestre
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(LoginUI.this, RegisterUI.class);
-                startActivity(intent);
-                finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
-            }
-        }, 500); // Esperar 500 ms antes de iniciar RegisterUI
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity(); // Cierra la aplicación
     }
 }
