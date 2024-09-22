@@ -57,11 +57,14 @@ public class PerfilUIUser extends AppCompatActivity {
     private boolean areNamesEditable = false;
     private boolean areSurnamesEditable = false;
 
+    private AnuncioChecker anuncioChecker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_perfil_ui_user);
+
 
         //===================================================================================
         /**
@@ -84,6 +87,15 @@ public class PerfilUIUser extends AppCompatActivity {
 
         // Obtener el username del Intent
         username = getIntent().getStringExtra("username");
+
+        //===================================================================================
+        /**
+         * VERIRICADOR DE ANUNCIO
+         */
+        // En tu actividad o fragmento
+        VerificadorDeAnuncio verificadorAnuncio = new VerificadorDeAnuncio(this, username);
+        verificadorAnuncio.iniciarVerificacion();
+        //===================================================================================
 
         // Referencias a los campos EditText y otros elementos
         txtCorreo = findViewById(R.id.txtCorreoPerfil);

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
@@ -21,8 +22,10 @@ import com.example.ecoalerta.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -37,6 +40,9 @@ public class UserUI extends AppCompatActivity {
     private ImageView imgvLoading; // Agregar esta línea
     private String username; // Declara username aquí
 
+    private AnuncioChecker anuncioChecker;
+    private int idUsuario; // Variable para almacenar el idUsuario
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +51,16 @@ public class UserUI extends AppCompatActivity {
 
         // Inicializa el username desde el Intent
         username = getIntent().getStringExtra("username");
+
+        //===================================================================================
+        /**
+         * VERIRICADOR DE ANUNCIO
+         */
+        // En tu actividad o fragmento
+        VerificadorDeAnuncio verificadorAnuncio = new VerificadorDeAnuncio(this, username);
+        verificadorAnuncio.iniciarVerificacion();
+        //===================================================================================
+
 
         //===================================================================================
         /**
@@ -205,7 +221,8 @@ public class UserUI extends AppCompatActivity {
         }
     }
 
-    @Override
+
+        @Override
     public void onBackPressed() {
         super.onBackPressed();
         Intent cargaIntent = new Intent(UserUI.this, CargaUI.class);

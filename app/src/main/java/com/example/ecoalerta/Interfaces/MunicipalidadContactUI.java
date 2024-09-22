@@ -12,6 +12,7 @@ import com.example.ecoalerta.R;
 
 public class MunicipalidadContactUI extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

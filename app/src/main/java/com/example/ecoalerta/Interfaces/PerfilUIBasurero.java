@@ -26,7 +26,7 @@ public class PerfilUIBasurero extends AppCompatActivity {
     private boolean isEmailEditable = false;
     private boolean areNamesEditable = false;
     private boolean areSurnamesEditable = false;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -66,4 +66,6 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.3");
     //
     implementation ("com.squareup.picasso:picasso:2.71828");
+    //
+    implementation ("androidx.core:core:1.6.0");
 }

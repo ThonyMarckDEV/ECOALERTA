@@ -52,6 +52,8 @@ public class ReportarUI extends AppCompatActivity {
     private String username;
     private String imageUrl;  // Almacenar la URL de la imagen después de subirla
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +78,15 @@ public class ReportarUI extends AppCompatActivity {
         txvfecha.setText(currentDateAndTime);
 
         username = getIntent().getStringExtra("username");
+
+        //===================================================================================
+        /**
+         * VERIRICADOR DE ANUNCIO
+         */
+        // En tu actividad o fragmento
+        VerificadorDeAnuncio verificadorAnuncio = new VerificadorDeAnuncio(this, username);
+        verificadorAnuncio.iniciarVerificacion();
+        //===================================================================================
 
         if (username != null) {
             new ObtenerIdUsuarioTask().execute(username);

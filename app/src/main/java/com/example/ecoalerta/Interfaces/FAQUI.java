@@ -12,6 +12,8 @@ import com.example.ecoalerta.R;
 
 public class FAQUI extends AppCompatActivity {
 
+    private AnuncioChecker anuncioChecker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

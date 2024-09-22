@@ -49,6 +49,7 @@ public class ListarReportesUI extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_listar_reportes_ui);
 
+
         // Inicializa el username desde el Intent
         username = getIntent().getStringExtra("username");
 
