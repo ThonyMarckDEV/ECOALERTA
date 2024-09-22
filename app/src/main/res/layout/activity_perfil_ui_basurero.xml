@@ -126,7 +126,7 @@
     <!-- GIF de carga -->
 
     <ImageView
-        android:id="@+id/imgvPerfilBasurero"
+        android:id="@+id/imgvPerfilAdmin"
         android:layout_width="179dp"
         android:layout_height="180dp"
         android:layout_marginStart="7dp"
@@ -141,7 +141,7 @@
         app:layout_constraintVertical_bias="0.185" />
 
     <ImageView
-        android:id="@+id/imgvLoadingBasurero"
+        android:id="@+id/imgvLoadingAdmin"
         android:layout_width="174dp"
         android:layout_height="146dp"
         android:src="@drawable/loadingperfil"

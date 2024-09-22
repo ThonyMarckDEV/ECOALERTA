@@ -1,51 +1,18 @@
 package com.example.ecoalerta.Interfaces;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.ecoalerta.R;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 
 public class PerfilUIBasurero extends AppCompatActivity {
 
@@ -63,6 +30,7 @@ public class PerfilUIBasurero extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_perfil_ui_basurero);
 
         //===================================================================================
@@ -91,8 +59,8 @@ public class PerfilUIBasurero extends AppCompatActivity {
         txtCorreoBasurero = findViewById(R.id.txtCorreoPerfilBasurero);
         txtNombresBasurero = findViewById(R.id.txtNombresPerfilBasurero);
         txtApellidosBasurero = findViewById(R.id.txtApellidosPerfilBasurero);
-        imgvPerfilBasurero = findViewById(R.id.imgvPerfilBasurero);
-        imgvLoadingBasurero = findViewById(R.id.imgvLoadingBasurero);
+        imgvPerfilBasurero = findViewById(R.id.imgvPerfilAdmin);
+        imgvLoadingBasurero = findViewById(R.id.imgvLoadingAdmin);
 
         btnEditarCorreoBasurero = findViewById(R.id.btnEditarCorreoBasurero);
         btnEditarNombresBasurero = findViewById(R.id.btnEditarNombresBasurero);
@@ -190,7 +158,7 @@ public class PerfilUIBasurero extends AppCompatActivity {
         // Usar un Handler para esperar un breve periodo y luego redirigir
         new Handler().postDelayed(() -> {
             // Crear la intención para redirigir a UserUI
-            Intent intent = new Intent(PerfilUIBasurero.this, UserUI.class); // Clase para el rol Usuario
+            Intent intent = new Intent(PerfilUIBasurero.this, BasureroUI.class); // Clase para el rol Usuario
 
             // Agregar el username como extra
             intent.putExtra("username", username);

@@ -34,7 +34,7 @@ public class ActualizarDatosUser {
         progressDialog.show();
 
         RequestQueue requestQueue = Volley.newRequestQueue(perfilUIUser);
-        String url = "https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_profile.php";
+        String url = ApiService.BASE_URL + "update_profile.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

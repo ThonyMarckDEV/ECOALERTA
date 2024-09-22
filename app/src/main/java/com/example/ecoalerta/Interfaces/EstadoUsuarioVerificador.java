@@ -31,7 +31,7 @@ public class EstadoUsuarioVerificador {
             new Thread(() -> {
                 try {
                     // URL del PHP para obtener el estado
-                    String urlString = "https://modern-blindly-kangaroo.ngrok-free.app/PHP/get_user_status.php?username=" + URLEncoder.encode(username, "UTF-8");
+                    String urlString = ApiService.BASE_URL + "get_user_status.php?username=" + URLEncoder.encode(username, "UTF-8");
                     URL url = new URL(urlString);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");

@@ -2,21 +2,36 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/eco_alerta_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/eco_alerta_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.ECOALERTA"
         tools:targetApi="31">
+        <activity
+            android:name=".Interfaces.GestionarReporteUI"
+            android:exported="false" />
+        <activity
+            android:name=".Interfaces.ListarReportesUI"
+            android:exported="false" />
+        <activity
+            android:name=".Interfaces.EnviarNotificacionUI"
+            android:exported="false" />
         <activity
             android:name=".Interfaces.MunicipalidadContactUI"
             android:exported="false" />

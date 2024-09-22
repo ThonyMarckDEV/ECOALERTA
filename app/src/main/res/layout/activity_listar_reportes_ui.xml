@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Fondo de la pantalla -->
+    <ImageView
+        android:id="@+id/imgvFondo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/carga_ui" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewReportes"
+        android:layout_width="match_parent"
+        android:layout_height="504dp"
+        android:layout_centerInParent="true"
+        android:background="#CCFFFFFF"
+        android:padding="16dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="43dp"
+        android:layout_above="@+id/recyclerViewReportes"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="114dp"
+        android:layout_marginTop="57dp"
+        android:layout_marginEnd="78dp"
+        android:layout_marginBottom="14dp"
+        android:fontFamily="@font/adlam_display"
+        android:text="REPORTES"
+        android:textColor="#144E07"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <!-- ProgressBar centrado mientras los reportes están cargando -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:progressTint="#813535"
+        android:indeterminateTint="#144E07"
+        android:visibility="gone" /> <!-- Inicialmente oculto -->
+
+    <!-- TextView para mostrar el mensaje cuando no haya reportes -->
+    <TextView
+        android:id="@+id/tvNoReportes"
+        android:layout_width="282dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="352dp"
+        android:layout_marginEnd="52dp"
+        android:layout_marginBottom="320dp"
+        android:fontFamily="@font/adlam_display"
+        android:text="No hay reportes por ahora..."
+        android:textColor="#3C952C"
+        android:textSize="18sp"
+        android:visibility="gone" /> <!-- Oculto por defecto -->
+</RelativeLayout>

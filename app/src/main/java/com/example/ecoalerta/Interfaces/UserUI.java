@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.ecoalerta.Interfaces.ApiService;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ecoalerta.R;
@@ -116,7 +116,7 @@ public class UserUI extends AppCompatActivity {
                     public void run() {
                         try {
                             // URL del archivo PHP
-                            URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php"); // Cambia esta URL a la URL correcta
+                            URL url = new URL( ApiService.BASE_URL + "update_status.php"); // Cambia esta URL a la URL correcta
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setRequestMethod("POST");
                             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -216,7 +216,7 @@ public class UserUI extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php");
+                    URL url = new URL(ApiService.BASE_URL + "update_status.php");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

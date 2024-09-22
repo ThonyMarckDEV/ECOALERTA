@@ -1,5 +1,6 @@
 package com.example.ecoalerta.Interfaces;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -55,6 +56,7 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_map_ui_basurero);
 
         //===================================================================================
@@ -218,7 +220,7 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
                 String username = getIntent().getStringExtra("username");
 
                 // URL del archivo PHP
-                URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/send_email.php"); // Cambia esta URL a la URL correcta
+                URL url = new URL(ApiService.BASE_URL + "send_email.php"); // Cambia esta URL a la URL correcta
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

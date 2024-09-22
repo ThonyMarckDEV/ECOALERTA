@@ -2,11 +2,8 @@ package com.example.ecoalerta.Interfaces;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,19 +13,11 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.ecoalerta.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.Scanner;
 
 /**
  * ESTA ES LA INTERFAZ DEL BASURERO
@@ -70,12 +59,12 @@ public class BasureroUI extends AppCompatActivity {
         //===================================================================================
 
         // Inicializar elementos
-        txtWelcome = findViewById(R.id.txtWelcomeBasurero);
-        btnLogout = findViewById(R.id.btnLogoutBasurero);
-        imgvPerfil = findViewById(R.id.imgvPerfilBasurero);
-        imgvLoading = findViewById(R.id.imgvLoadingBasurero); // Inicializar el ImageView para el GIF
-        Button btnVerMapa = findViewById(R.id.btnVerMapaBasurero); // Inicializar el botón para ver mapa
-        Button btnPerfil = findViewById(R.id.btnPerfilBasurero); // Inicializar el botón para ver mapa
+        txtWelcome = findViewById(R.id.txtWelcomeADMIN);
+        btnLogout = findViewById(R.id.btnLogoutADMIN);
+        imgvPerfil = findViewById(R.id.imgvPerfilAdmin);
+        imgvLoading = findViewById(R.id.imgvLoadingAdmin); // Inicializar el ImageView para el GIF
+        Button btnVerMapa = findViewById(R.id.btnEnviarNotificacion); // Inicializar el botón para ver mapa
+        Button btnPerfil = findViewById(R.id.btnGestionarReportes); // Inicializar el botón para ver mapa
 
         // Obtener el username del Intent
         String username = getIntent().getStringExtra("username");
@@ -112,7 +101,7 @@ public class BasureroUI extends AppCompatActivity {
                     public void run() {
                         try {
                             // URL del archivo PHP
-                            URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php"); // Cambia esta URL a la URL correcta
+                            URL url = new URL(ApiService.BASE_URL + "update_status.php"); // Cambia esta URL a la URL correcta
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setRequestMethod("POST");
                             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -169,7 +158,7 @@ public class BasureroUI extends AppCompatActivity {
             btnPerfil.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent mapIntent = new Intent(BasureroUI.this, PerfilUIUser.class);
+                    Intent mapIntent = new Intent(BasureroUI.this, PerfilUIBasurero.class);
                     mapIntent.putExtra("username", username); // Pasar el nombre de usuario
                     startActivity(mapIntent);
                 }
@@ -188,7 +177,7 @@ public class BasureroUI extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/update_status.php");
+                    URL url = new URL(ApiService.BASE_URL + "update_status.php");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

@@ -34,7 +34,7 @@ public class ObtenerProfileTask extends AsyncTask<String, Void, String> {
         String result = "";
         try {
             String username = params[0];
-            URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/perfil.php");
+            URL url = new URL(ApiService.BASE_URL + "perfil.php");
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");

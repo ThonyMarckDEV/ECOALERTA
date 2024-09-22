@@ -70,7 +70,7 @@ public class RegisterUI extends AppCompatActivity {
             String password = params[4];
 
             try {
-                URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/register.php");
+                URL url = new URL(ApiService.BASE_URL + "register.php");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);

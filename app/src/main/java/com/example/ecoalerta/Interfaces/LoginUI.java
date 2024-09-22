@@ -60,13 +60,13 @@ public class LoginUI extends AppCompatActivity {
         TextView lblNuevo = findViewById(R.id.lblNuevo);
 
 
-        // Verificar si ya hay un username guardado en SharedPreferences
         SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String savedUsername = preferences.getString("username", null);
+        String savedRol = preferences.getString("rol", null);
 
-        if (savedUsername != null) {
-            // Hay un username guardado, redirigir a la interfaz correspondiente
+        if (savedUsername != null && savedRol != null) {
             verificarRol(savedUsername);
+
         } else {
             // Inicializar la Intent para la pantalla de carga
 
@@ -140,7 +140,7 @@ public class LoginUI extends AppCompatActivity {
         String response = "";
 
         try {
-            URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/get_user_status.php?username=" + URLEncoder.encode(username, "UTF-8"));
+            URL url = new URL(ApiService.BASE_URL + "get_user_status.php?username=" + URLEncoder.encode(username, "UTF-8"));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
@@ -158,10 +158,15 @@ public class LoginUI extends AppCompatActivity {
         return response;
     }
 
-    // Método para verificar el rol del usuario guardado y redirigir
     private void verificarRol(String username) {
-        // Aquí puedes realizar la lógica para determinar el rol del usuario desde SharedPreferences o alguna otra fuente
-        String rol = "Usuario"; // Asumimos que has guardado o puedes obtener el rol de alguna manera
+        // Obtener el rol desde SharedPreferences u otra fuente (como el servidor).
+        SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String rol = preferences.getString("rol", null); // Asume que ya has guardado el rol previamente.
+
+        if (rol == null) {
+            Toast.makeText(LoginUI.this, "No se pudo obtener el rol del usuario", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         Intent intent;
         switch (rol) {
@@ -214,7 +219,7 @@ public class LoginUI extends AppCompatActivity {
             String password = params[1];
             // Aquí va tu código de conexión HTTP
             try {
-                URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/login.php");
+                URL url = new URL(ApiService.BASE_URL + "login.php");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
@@ -258,6 +263,7 @@ public class LoginUI extends AppCompatActivity {
                     SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("username", username);
+                    editor.putString("rol", rol);  // Guardar también el rol
                     editor.apply();
 
                     Intent intent;

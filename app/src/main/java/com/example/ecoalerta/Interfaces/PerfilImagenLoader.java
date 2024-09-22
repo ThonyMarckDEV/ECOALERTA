@@ -39,7 +39,7 @@ public class PerfilImagenLoader {
             HttpURLConnection connection = null;
             InputStream inputStream = null;
             try {
-                URL url = new URL("https://modern-blindly-kangaroo.ngrok-free.app/PHP/get_profile_picture.php");
+                URL url = new URL(ApiService.BASE_URL + "get_profile_picture.php");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
