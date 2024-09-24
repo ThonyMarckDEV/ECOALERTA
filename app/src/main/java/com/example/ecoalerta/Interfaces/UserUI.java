@@ -249,18 +249,26 @@ public class UserUI extends AppCompatActivity {
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     connection.setDoOutput(true);
-                    String postData = "username=" + username;
+
+                    // Enviar el nombre de usuario al servidor
+                    String postData = "username=" + URLEncoder.encode(username, "UTF-8");
                     OutputStream os = connection.getOutputStream();
                     os.write(postData.getBytes());
                     os.flush();
                     os.close();
-                    SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.remove("username");
-                    editor.apply();
+
+                    // Verificar el código de respuesta
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        Log.d("Deslogear", "Estado actualizado exitosamente");
+                    } else {
+                        Log.d("Deslogear", "Error al actualizar estado: " + responseCode);
+                    }
+
                     connection.disconnect();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Log.e("Deslogear", "Error en la solicitud: " + e.getMessage());
                 }
             }
         }).start();

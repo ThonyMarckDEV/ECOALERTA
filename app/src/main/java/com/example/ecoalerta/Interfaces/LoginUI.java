@@ -353,14 +353,25 @@ public class LoginUI extends AppCompatActivity {
                     finish();
                 } else {
                     Toast.makeText(LoginUI.this, jsonResponse.getString("message"), Toast.LENGTH_LONG).show();
+                    regresarALogin();  // Método para regresar a LoginUI
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                // Si ocurre un error al procesar la respuesta, regresar a la pantalla de login
                 Toast.makeText(LoginUI.this, "Error al procesar la respuesta: " + result, Toast.LENGTH_LONG).show();
+                regresarALogin();  // Método para regresar a LoginUI
             }
         }
     }
 
+
+    private void regresarALogin() {
+        // Limpiar los campos de texto para evitar que se mantengan los datos ingresados anteriormente
+        txtUsername.setText("");
+        txtPassword.setText("");
+        startActivity(new Intent(LoginUI.this, LoginUI.class));
+        finish(); // Finalizar la actividad actual para evitar que el usuario regrese al estado anterior
+    }
 
     @Override
     public void onBackPressed() {
