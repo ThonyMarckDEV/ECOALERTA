@@ -1,22 +1,20 @@
 package com.example.ecoalerta.Interfaces; // Cambia esto al paquete correspondiente
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.ecoalerta.R; // Asegúrate de importar tu recurso de imagen por defecto
+import com.example.ecoalerta.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -40,6 +38,7 @@ public class PerfilImagenLoader {
             HttpURLConnection connection = null;
             InputStream inputStream = null;
             try {
+                // URL base donde está el script PHP para obtener la imagen
                 URL url = new URL(ApiService.BASE_URL + "get_profile_picture.php");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
@@ -66,15 +65,10 @@ public class PerfilImagenLoader {
                 try {
                     JSONObject jsonResponse = new JSONObject(response.toString());
                     if (jsonResponse.getString("status").equals("success")) {
-                        String perfilBase64 = jsonResponse.getString("perfil");
+                        String perfilUrl = jsonResponse.getString("perfil");  // URL completa desde el servidor
 
-                        // Verificar si el servidor devuelve una imagen vacía
-                        if (perfilBase64 != null && !perfilBase64.isEmpty()) {
-                            // Decodificar Base64 a byte array
-                            byte[] decodedString = Base64.decode(perfilBase64.split(",")[1], Base64.DEFAULT);
-
-                            // Convertir byte array a Bitmap
-                            final Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        if (perfilUrl != null && !perfilUrl.isEmpty()) {
+                            Log.d("PerfilImagenLoader", "URL de la imagen: " + perfilUrl);
 
                             ((AppCompatActivity) context).runOnUiThread(() -> {
                                 if (!((AppCompatActivity) context).isFinishing() && !((AppCompatActivity) context).isDestroyed()) {
@@ -83,15 +77,14 @@ public class PerfilImagenLoader {
                                         imgvLoading.setVisibility(View.GONE);
                                     }
 
-                                    // Usar Glide para cargar la imagen en el ImageView con la transformación circular
+                                    // Usar Glide para cargar la imagen desde la URL completa
                                     Glide.with(context)
-                                            .load(bitmap)
-                                            .apply(RequestOptions.circleCropTransform())
+                                            .load(perfilUrl)  // Cargar la URL completa
+                                            .apply(RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE))
                                             .into(imgvPerfil);
                                 }
                             });
                         } else {
-                            // Si no hay imagen, cargar la imagen por defecto
                             cargarImagenPorDefecto();
                         }
                     } else {
@@ -115,7 +108,7 @@ public class PerfilImagenLoader {
                 if (inputStream != null) {
                     try {
                         inputStream.close();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
