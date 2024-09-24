@@ -1,12 +1,22 @@
 package com.example.ecoalerta.Interfaces;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,19 +24,41 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.ecoalerta.R;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
+
 public class PerfilUIUser extends AppCompatActivity {
+
+    private static final int SELECT_PICTURE = 1;
+    private Uri selectedImageUri;
+    private Bitmap imageBitmap;  // Declaramos imageBitmap aquí a nivel de clase
 
     private String username;
     private EditText txtNombres, txtApellidos, txtCorreo;
     private ImageView imgvPerfil;
     private ImageView imgvLoading;
-    private Button btnEditarCorreo, btnEditarNombres, btnEditarApellidos, btnActualizaPerfil,btnfaq;
+    private Button btnEditarCorreo, btnEditarNombres, btnEditarApellidos, btnActualizaPerfil,btnfaq,btnSubirFoto;
 
     // Variables para controlar la editabilidad de los campos
     private boolean isEmailEditable = false;
     private boolean areNamesEditable = false;
     private boolean areSurnamesEditable = false;
 
+    private ProgressDialog progressDialog; // Para mostrar el diálogo de progreso
     private AnuncioChecker anuncioChecker;
 
     @Override
@@ -35,6 +67,10 @@ public class PerfilUIUser extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_perfil_ui_user);
 
+        // Inicializar el ProgressDialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Actualizando foto de perfil...");
+        progressDialog.setCancelable(false);
 
         //===================================================================================
         /**
@@ -78,6 +114,7 @@ public class PerfilUIUser extends AppCompatActivity {
         btnEditarNombres = findViewById(R.id.btnEditarNombres);
         btnEditarApellidos = findViewById(R.id.btnEditarApellidos);
         btnActualizaPerfil = findViewById(R.id.btnActualizaPerfil);
+        btnSubirFoto = findViewById(R.id.btnSubirFotoPerfil);
         btnfaq = findViewById(R.id.btnFAQ);
 //===================================================================================
         // Usar CLASE PerfilImagenLoader para cargar la imagen de perfil
@@ -133,8 +170,16 @@ public class PerfilUIUser extends AppCompatActivity {
                     .into(imgvLoading);
         }
 
+
+        btnSubirFoto.setOnClickListener(v -> {
+            // Abrir galería para seleccionar una imagen
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            startActivityForResult(Intent.createChooser(intent, "Selecciona una imagen"), SELECT_PICTURE);
+        });
+
         //===================================================================================
-        // Usar CLASE actualizarDatos para cargar la imagen de perfil
+        // Usar CLASE actualizarDatos para ACTUALIZAR DATOS DE LOS TXT
         /**
          * SE USO LA CLASE actualizarDatos PARA ACTUALIZAR DATOS DE LOS TXT
          */
@@ -160,6 +205,141 @@ public class PerfilUIUser extends AppCompatActivity {
         }
 
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            selectedImageUri = data.getData();
+
+            try {
+                // Convertir la imagen seleccionada en un Bitmap
+                imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+
+                // Mostrar ProgressDialog y llamar al AsyncTask para subir la imagen
+                progressDialog.show();
+                new EnviarImagenTask().execute();
+
+                // Llamar al AsyncTask para subir la imagen
+                new EnviarImagenTask().execute();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error al seleccionar la imagen", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class EnviarImagenTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                // Convertir la imagen en un array de bytes
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
+                // Subir la imagen al servidor
+                String imageUploadUrl = ApiService.BASE_URL + "update_foto_perfil.php";  // Cambia por tu URL
+
+                URL url = new URL(imageUploadUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=*****");
+
+                DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
+                dos.writeBytes("--*****\r\n");
+                dos.writeBytes("Content-Disposition: form-data; name=\"image\"; filename=\"image.jpg\"\r\n");
+                dos.writeBytes("\r\n");
+                dos.write(imageBytes);
+                dos.writeBytes("\r\n");
+                dos.writeBytes("--*****--\r\n");
+
+                dos.flush();
+                dos.close();
+
+                // Leer la respuesta del servidor
+                InputStream responseStream = connection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(responseStream);
+                StringBuilder response = new StringBuilder();
+                int data;
+                while ((data = reader.read()) != -1) {
+                    response.append((char) data);
+                }
+                reader.close();
+
+                // Parsear la respuesta JSON para obtener la URL de la imagen
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                String imageUrl = jsonResponse.getString("image_url");
+
+                // Si la imagen fue subida correctamente, actualiza la URL en la base de datos
+                return actualizarURLPerfil(imageUrl);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "error";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // Ocultar el ProgressDialog cuando se completa el proceso
+            progressDialog.dismiss();
+
+            if ("success".equals(result)) {
+                Toast.makeText(PerfilUIUser.this, "Imagen subida exitosamente", Toast.LENGTH_SHORT).show();
+                finish();  // Cierra la actividad actual después de iniciar la nueva
+            } else {
+                Toast.makeText(PerfilUIUser.this, "Error al subir la imagen ", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // Método para enviar la URL de la imagen al servidor para actualizar el perfil
+        private String actualizarURLPerfil(String imageUrl) {
+            try {
+                // URL del servidor para actualizar el perfil del usuario
+                String updateUrl = ApiService.BASE_URL + "upload_url_img.php";  // Cambia por tu URL
+
+                URL url = new URL(updateUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                // Crear los parámetros POST
+                String postData = "username=" + username + "&imagen_url=" + imageUrl;
+
+                // Enviar los datos al servidor
+                DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
+                dos.writeBytes(postData);
+                dos.flush();
+                dos.close();
+
+                // Leer la respuesta del servidor
+                InputStream responseStream = connection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(responseStream);
+                StringBuilder response = new StringBuilder();
+                int data;
+                while ((data = reader.read()) != -1) {
+                    response.append((char) data);
+                }
+                reader.close();
+
+                // Parsear la respuesta JSON
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                return jsonResponse.getString("status");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "error";
+            }
+        }
+
+    }
+
 
     public void setFieldsEditable(boolean editable) {
         txtNombres.setEnabled(editable);

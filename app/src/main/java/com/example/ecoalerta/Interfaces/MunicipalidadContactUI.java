@@ -20,20 +20,5 @@ public class MunicipalidadContactUI extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_municipalidad_contact_ui);
 
-        // =================================================================================
-        /**
-         * Verificador Sesion cada 10 seg
-         */
-        EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                verificador.verificarEstado();
-                handler.postDelayed(this, 10000);
-            }
-        };
-        handler.post(runnable);
-        // =================================================================================
     }
 }

@@ -236,50 +236,17 @@ public class UserUI extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent cargaIntent = new Intent(UserUI.this, CargaUI.class);
-        startActivity(cargaIntent);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL url = new URL(ApiService.BASE_URL + "update_status.php");
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
+    protected void onResume() {
+        super.onResume();
+        PerfilImagenLoader perfilLoader = new PerfilImagenLoader(this, imgvLoading, imgvPerfil);
+        perfilLoader.cargarImagen(username);
 
-                    // Enviar el nombre de usuario al servidor
-                    String postData = "username=" + URLEncoder.encode(username, "UTF-8");
-                    OutputStream os = connection.getOutputStream();
-                    os.write(postData.getBytes());
-                    os.flush();
-                    os.close();
-
-                    // Verificar el código de respuesta
-                    int responseCode = connection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        Log.d("Deslogear", "Estado actualizado exitosamente");
-                    } else {
-                        Log.d("Deslogear", "Error al actualizar estado: " + responseCode);
-                    }
-
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("Deslogear", "Error en la solicitud: " + e.getMessage());
-                }
-            }
-        }).start();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(UserUI.this, LoginUI.class);
-                startActivity(intent);
-                finish();
-            }
-        }, 500);
     }
+
+    @Override
+    public void onBackPressed() {
+        // Cerrar la aplicación completamente
+        finishAffinity();  // Cierra todas las actividades y finaliza la aplicación
+    }
+
 }

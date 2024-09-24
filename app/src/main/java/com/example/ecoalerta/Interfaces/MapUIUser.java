@@ -99,15 +99,6 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
         // Obtener el nombre de usuario del Intent
         username = getIntent().getStringExtra("username");
 
-        //===================================================================================
-        /**
-         * VERIRICADOR DE ANUNCIO
-         */
-        // En tu actividad o fragmento
-        VerificadorDeAnuncio verificadorAnuncio = new VerificadorDeAnuncio(this, username);
-        verificadorAnuncio.iniciarVerificacion();
-        //===================================================================================
-
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);

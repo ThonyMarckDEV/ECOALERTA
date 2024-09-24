@@ -79,15 +79,6 @@ public class ReportarUI extends AppCompatActivity {
 
         username = getIntent().getStringExtra("username");
 
-        //===================================================================================
-        /**
-         * VERIRICADOR DE ANUNCIO
-         */
-        // En tu actividad o fragmento
-        VerificadorDeAnuncio verificadorAnuncio = new VerificadorDeAnuncio(this, username);
-        verificadorAnuncio.iniciarVerificacion();
-        //===================================================================================
-
         // =================================================================================
         /**
          * Verificador Sesion cada 10 seg
