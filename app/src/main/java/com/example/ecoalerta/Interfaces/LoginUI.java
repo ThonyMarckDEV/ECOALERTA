@@ -35,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
+import com.example.ecoalerta.Interfaces.CheckUpdate;
 
 public class LoginUI extends AppCompatActivity {
 
@@ -46,6 +47,10 @@ public class LoginUI extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+
+        // Llamamos a la clase UpdateChecker para verificar actualizaciones
+        CheckUpdate updateChecker = new CheckUpdate(this);
+        updateChecker.checkForUpdate();
 
         // Aquí solicita permisos de ubicación
         requestLocationPermissions();
