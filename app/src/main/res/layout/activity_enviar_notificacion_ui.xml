@@ -1,57 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@android:color/white">
+    android:layout_height="match_parent">
 
-    <!-- Título de la pantalla -->
-    <TextView
-        android:id="@+id/tvTitulo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enviar Notificación"
-        android:textSize="24sp"
-        android:textColor="#144E07"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp" />
-
-    <!-- Campo para el título del anuncio -->
-    <EditText
-        android:id="@+id/etTituloNotificacion"
+    <!-- ImageView de fondo -->
+    <ImageView
+        android:id="@+id/imgBackground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Título de la notificación"
-        android:padding="12dp"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/carga_ui" /> <!-- Cambia esto por la imagen que desees -->
 
-    <!-- Campo para el mensaje del anuncio -->
-    <EditText
-        android:id="@+id/etMensajeNotificacion"
+    <!-- Contenedor principal con los elementos -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Mensaje de la notificación"
-        android:padding="12dp"
-        android:gravity="top"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:minLines="5"
-        android:layout_marginBottom="24dp" />
-
-    <!-- Botón para enviar la notificación -->
-    <Button
-        android:id="@+id/btnEnviarNotificacion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:padding="16dp"
-        android:text="Enviar Notificación"
-        android:textSize="18sp"
-        android:backgroundTint="#6DB34F"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        android:gravity="center"
+        android:background="@android:color/transparent"> <!-- Fondo transparente para mostrar la imagen de fondo -->
 
-</LinearLayout>
+        <!-- Título de la pantalla -->
+        <TextView
+            android:id="@+id/tvTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enviar Notificación"
+            android:textSize="24sp"
+            android:textColor="#144E07"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Campo para el título del anuncio -->
+
+        <!-- Campo para el mensaje del anuncio -->
+        <EditText
+            android:id="@+id/etTituloNotificacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/white"
+            android:fontFamily="@font/adlam_display"
+            android:hint="Título de la notificación"
+            android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="#4D4949"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/etMensajeNotificacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@android:color/white"
+            android:fontFamily="@font/adlam_display"
+            android:gravity="top"
+            android:hint="Mensaje de la notificación"
+            android:minLines="5"
+            android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="#4D4949"
+            android:textSize="16sp" />
+
+        <!-- Botón para enviar la notificación centrado -->
+        <Button
+            android:id="@+id/btnEnviarNotificacion"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Enviar Notificación"
+            android:textSize="16sp"
+            android:backgroundTint="#6DB34F"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp" />
+
+    </LinearLayout>
+
+</FrameLayout>

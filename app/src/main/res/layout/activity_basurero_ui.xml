@@ -75,6 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#69B349"
+        android:fontFamily="@font/adlam_display"
         android:text="Deslogearse"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"

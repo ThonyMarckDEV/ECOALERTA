@@ -12,8 +12,12 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.ecoalerta.R;
 import java.io.OutputStream;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class RegisterUI extends AppCompatActivity {
 
@@ -74,6 +78,7 @@ public class RegisterUI extends AppCompatActivity {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
                 // Enviar los datos al servidor
                 String postData = "username=" + username +
@@ -87,12 +92,18 @@ public class RegisterUI extends AppCompatActivity {
                 os.flush();
                 os.close();
 
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    return "Registro exitoso";
-                } else {
-                    return "Error en el registro";
+                // Leer la respuesta del servidor
+                InputStream is = connection.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
                 }
+                reader.close();
+
+                return response.toString();
+
             } catch (Exception e) {
                 e.printStackTrace();
                 return "Excepción: " + e.getMessage();
@@ -102,16 +113,31 @@ public class RegisterUI extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            // Ocultar la pantalla de carga
-            Intent intent = new Intent(RegisterUI.this, LoginUI.class);
-            startActivity(intent);
 
-            // Opcional: cerrar la actividad actual
-            finish();
+            try {
+                // Parsear la respuesta como JSON
+                JSONObject jsonResponse = new JSONObject(result);
+                String status = jsonResponse.getString("status");
+                String message = jsonResponse.getString("message");
 
-            // Mostrar el resultado
-            Toast.makeText(RegisterUI.this, result, Toast.LENGTH_LONG).show();
+                if (status.equals("success")) {
+                    Toast.makeText(RegisterUI.this, message, Toast.LENGTH_LONG).show();
+                    // Registro exitoso, redirigir a LoginUI
+                    Intent intent = new Intent(RegisterUI.this, LoginUI.class);
+                    startActivity(intent);
+                    finish();
+                } else if (status.equals("error")) {
+                    // Mostrar el error y redirigir a LoginUI
+                    Toast.makeText(RegisterUI.this, message, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(RegisterUI.this, LoginUI.class);
+                    startActivity(intent);
+                    finish();
+                }
 
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(RegisterUI.this, "Error en el registro", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -125,14 +151,10 @@ public class RegisterUI extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Asegúrate de que la pantalla de carga esté cerrada antes de iniciar LoginUI
                 Intent intent = new Intent(RegisterUI.this, LoginUI.class);
                 startActivity(intent);
-                finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
+                finish();
             }
         }, 500); // Esperar 500 ms antes de iniciar LoginUI
-
-        // Opcional: Si quieres que el back button no vuelva a la actividad actual
-        // finish(); // Descomenta esta línea si quieres cerrar la actividad actual
     }
 }

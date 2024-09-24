@@ -1,48 +1,18 @@
 package com.example.ecoalerta.Interfaces;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.ecoalerta.R;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 
 public class PerfilUIUser extends AppCompatActivity {
 
@@ -99,7 +69,7 @@ public class PerfilUIUser extends AppCompatActivity {
 
         // Referencias a los campos EditText y otros elementos
         txtCorreo = findViewById(R.id.txtCorreoPerfil);
-        txtNombres = findViewById(R.id.txtNombresPerfil);
+        txtNombres = findViewById(R.id.txtPasswordPerfil);
         txtApellidos = findViewById(R.id.txtApellidosPerfil);
         imgvPerfil = findViewById(R.id.imgvPerfil);
         imgvLoading = findViewById(R.id.imgvLoading);
@@ -120,9 +90,9 @@ public class PerfilUIUser extends AppCompatActivity {
 
 
 //===================================================================================
-        // Usar CLASE ObtenerProfileTask para cargar la imagen de perfil
+        // Usar CLASE ObtenerProfileTask para cargar los datos
         /**
-         * SE USO LA CLASE ObtenerProfileTask PARA CARGAR LA FOTO
+         * SE USO LA CLASE ObtenerProfileTask cargar los datos
          */
         new ObtenerProfileTask(txtNombres, txtApellidos, txtCorreo).execute(username);
 //===================================================================================

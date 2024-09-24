@@ -1,11 +1,21 @@
 package com.example.ecoalerta.Interfaces;
 
+import static com.example.ecoalerta.Clases.LocationHelper.LOCATION_PERMISSION_REQUEST_CODE;
+
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import android.Manifest;
 import android.content.Intent;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +47,9 @@ public class LoginUI extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
+        // Aquí solicita permisos de ubicación
+        requestLocationPermissions();
+
         cargaIntent = new Intent(LoginUI.this, CargaUI.class);
 
         // Referencias a los ImageView
@@ -55,7 +68,7 @@ public class LoginUI extends AppCompatActivity {
 
         // Inicializar campos de entrada y botones
         txtUsername = findViewById(R.id.txtUserNameLogin);
-        txtPassword = findViewById(R.id.txtNombresPerfil);
+        txtPassword = findViewById(R.id.txtPasswordPerfil);
         Button btnLogin = findViewById(R.id.btnLogearse);
         TextView lblNuevo = findViewById(R.id.lblNuevo);
 
@@ -95,6 +108,57 @@ public class LoginUI extends AppCompatActivity {
             });
         }
     }
+
+    private void requestLocationPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            checkLocationEnabled();
+        }
+    }
+
+    private void checkLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // Redirigir a la configuración de ubicación
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkLocationEnabled();
+            } else {
+                Toast.makeText(this, "Se necesita permiso de ubicación para continuar.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    // Método para comprobar las notificaciones
+    private void checkNotificationSettings() {
+        // Verificar si las notificaciones están habilitadas
+        if (!areNotificationsEnabled()) {
+            // Redirigir a la configuración de la aplicación
+            startActivity(new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName()));
+        }
+    }
+
+    private boolean areNotificationsEnabled() {
+        return NotificationManagerCompat.from(this).areNotificationsEnabled();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkNotificationSettings(); // Verificar notificaciones cada vez que la actividad se reanuda
+    }
+
     //METOOD OBTENER ESTADO DEL SERVER
     // Clase para verificar el estado del usuario
     private class CheckUserStatusTask extends AsyncTask<String, Void, String> {
@@ -115,6 +179,8 @@ public class LoginUI extends AppCompatActivity {
                         @Override
                         public void run() {
                             Toast.makeText(LoginUI.this, "USUARIO YA LOGEADO!!!", Toast.LENGTH_LONG).show();
+                            txtUsername.setText("");
+                            txtPassword.setText("");
                         }
                     });
                 } else {

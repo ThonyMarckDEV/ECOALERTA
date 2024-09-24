@@ -125,6 +125,7 @@ public class AnuncioChecker {
                     .setSmallIcon(R.drawable.eco_alerta_logo)
                     .setContentTitle(titulo)
                     .setContentText(mensaje)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(mensaje)) // Usar BigTextStyle para mostrar más texto
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setContentIntent(emptyIntent)
                     .setAutoCancel(true);

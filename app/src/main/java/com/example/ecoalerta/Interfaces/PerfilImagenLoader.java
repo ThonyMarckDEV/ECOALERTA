@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.ecoalerta.R; // Asegúrate de importar tu recurso de imagen por defecto
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,37 +68,46 @@ public class PerfilImagenLoader {
                     if (jsonResponse.getString("status").equals("success")) {
                         String perfilBase64 = jsonResponse.getString("perfil");
 
-                        // Decodificar Base64 a byte array
-                        byte[] decodedString = Base64.decode(perfilBase64.split(",")[1], Base64.DEFAULT);
+                        // Verificar si el servidor devuelve una imagen vacía
+                        if (perfilBase64 != null && !perfilBase64.isEmpty()) {
+                            // Decodificar Base64 a byte array
+                            byte[] decodedString = Base64.decode(perfilBase64.split(",")[1], Base64.DEFAULT);
 
-                        // Convertir byte array a Bitmap
-                        final Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            // Convertir byte array a Bitmap
+                            final Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
-                        ((AppCompatActivity) context).runOnUiThread(() -> {
-                            if (!((AppCompatActivity) context).isFinishing() && !((AppCompatActivity) context).isDestroyed()) {
-                                // Ocultar el GIF de carga
-                                if (imgvLoading != null) {
-                                    imgvLoading.setVisibility(View.GONE);
+                            ((AppCompatActivity) context).runOnUiThread(() -> {
+                                if (!((AppCompatActivity) context).isFinishing() && !((AppCompatActivity) context).isDestroyed()) {
+                                    // Ocultar el GIF de carga
+                                    if (imgvLoading != null) {
+                                        imgvLoading.setVisibility(View.GONE);
+                                    }
+
+                                    // Usar Glide para cargar la imagen en el ImageView con la transformación circular
+                                    Glide.with(context)
+                                            .load(bitmap)
+                                            .apply(RequestOptions.circleCropTransform())
+                                            .into(imgvPerfil);
                                 }
-
-                                // Usar Glide para cargar la imagen en el ImageView con la transformación circular
-                                Glide.with(context)
-                                        .load(bitmap)
-                                        .apply(RequestOptions.circleCropTransform())
-                                        .into(imgvPerfil);
-                            }
-                        });
+                            });
+                        } else {
+                            // Si no hay imagen, cargar la imagen por defecto
+                            cargarImagenPorDefecto();
+                        }
                     } else {
-                        String errorMessage = jsonResponse.optString("message", "Error desconocido");
-                        System.err.println("Error del servidor: " + errorMessage);
+                        // Si hay un error en la respuesta, cargar la imagen por defecto
+                        cargarImagenPorDefecto();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    System.err.println("La respuesta no es un JSON válido: " + response.toString());
+                    // Si hay un error en el formato del JSON, cargar la imagen por defecto
+                    cargarImagenPorDefecto();
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
+                // Si hay una excepción, cargar la imagen por defecto
+                cargarImagenPorDefecto();
             } finally {
                 if (connection != null) {
                     connection.disconnect();
@@ -111,5 +121,22 @@ public class PerfilImagenLoader {
                 }
             }
         }).start();
+    }
+
+    private void cargarImagenPorDefecto() {
+        ((AppCompatActivity) context).runOnUiThread(() -> {
+            if (!((AppCompatActivity) context).isFinishing() && !((AppCompatActivity) context).isDestroyed()) {
+                // Ocultar el GIF de carga
+                if (imgvLoading != null) {
+                    imgvLoading.setVisibility(View.GONE);
+                }
+
+                // Cargar la imagen por defecto con Glide
+                Glide.with(context)
+                        .load(R.drawable.default_perfil) // Imagen por defecto en drawable
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(imgvPerfil);
+            }
+        });
     }
 }

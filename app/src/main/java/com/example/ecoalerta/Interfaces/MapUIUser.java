@@ -9,9 +9,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -45,13 +47,16 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
     private FirebaseFirestore db;
     private GoogleMap mMap;
     private Marker basureroMarker;
-    private Marker userMarker;
     private MapView mapView;
     private LatLng currentUserLatLng;
     private boolean isInitialCameraPositionSet = false;
     private MediaPlayer proximitySoundPlayer;
     private boolean isSoundPlaying = false;
     private String username; // Añadir esta línea para guardar el nombre del usuario
+    private boolean isLocationPromptShown = false;
+    private Handler handlerubi; // Mover el Handler a nivel de clase
+    private Runnable updateLocationTask; // Mover el Runnable a nivel de clase
+    private boolean isUpdatingLocation = false; // Flag para controlar la actualización de ubicación
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,18 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
         // Crear instancia del verificador de estado
         EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
 
+        // Inicializar el Handler y Runnable para actualizar la ubicación
+        handlerubi = new Handler();
+        updateLocationTask = new Runnable() {
+            @Override
+            public void run() {
+                if (mMap != null && isUpdatingLocation) { // Solo actualizar si se permite
+                    updateUserLocation();
+                    updateBasureroLocation();
+                }
+                handlerubi.postDelayed(this, 3000); // Update every 3 seconds
+            }
+        };
         // Iniciar el ciclo de verificación del estado del usuario
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
@@ -102,19 +119,33 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
         proximitySoundPlayer = MediaPlayer.create(this, R.raw.notibasura); // Replace with your sound file
         proximitySoundPlayer.setLooping(true); // Set looping to true
 
-        // Update location every 3 seconds
-        final Handler handlerubi = new Handler();
-        final Runnable updateLocationTask = new Runnable() {
+        // Inicializar el Handler y Runnable para actualizar la ubicación
+        handlerubi = new Handler();
+        updateLocationTask = new Runnable() {
             @Override
             public void run() {
-                if (mMap != null) {
+                if (mMap != null && isUpdatingLocation) { // Solo actualizar si se permite
                     updateUserLocation();
                     updateBasureroLocation();
                 }
-                handler.postDelayed(this, 3000); // Update every 3 seconds
+                handlerubi.postDelayed(this, 3000); // Update every 3 seconds
             }
         };
-        handlerubi.post(updateLocationTask);
+    }
+
+    private void checkLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!isLocationPromptShown) { // Solo mostrar si no se ha mostrado antes
+                Toast.makeText(this, "Por favor, activa la ubicación", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                isLocationPromptShown = true; // Marcar como mostrado
+            }
+        } else {
+            // Si la ubicación está habilitada, actualizar la ubicación
+            updateUserLocation();
+            isLocationPromptShown = false; // Reiniciar para futuras verificaciones
+        }
     }
 
     @Override
@@ -123,8 +154,8 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
 
         // Check for location permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            checkLocationEnabled(); // Verificar si la ubicación está habilitada
             mMap.setMyLocationEnabled(true);
-            updateUserLocation();
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         }
@@ -137,12 +168,33 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
     protected void onResume() {
         super.onResume();
         mapView.onResume();
+
+        // Reiniciar el estado para mostrar el prompt de ubicación nuevamente si es necesario
+        isLocationPromptShown = false;
+
+        // Verificar si la ubicación está habilitada cada vez que se reanuda la actividad
+        checkLocationEnabled();
+
+        isUpdatingLocation = true; // Permitir actualización de ubicación al reanudar
+        handlerubi.post(updateLocationTask); // Iniciar la tarea de actualización de ubicación
     }
+
 
     @Override
     protected void onPause() {
         super.onPause();
         mapView.onPause();
+
+        // Detener el sonido de proximidad si está sonando
+        if (isSoundPlaying) {
+            proximitySoundPlayer.pause();
+            proximitySoundPlayer.seekTo(0); // Reiniciar el sonido
+            isSoundPlaying = false; // Marcar como no sonando
+        }
+
+        // Detener la actualización de ubicación
+        isUpdatingLocation = false; // No permitir actualizaciones mientras la actividad está en pausa
+        handlerubi.removeCallbacks(updateLocationTask); // Detener el Handler
     }
 
     @Override
@@ -174,14 +226,6 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
                     .addOnSuccessListener(this, location -> {
                         if (location != null) {
                             LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                            if (userMarker != null) {
-                                userMarker.setPosition(userLatLng);
-                            } else {
-                                userMarker = mMap.addMarker(new MarkerOptions()
-                                        .position(userLatLng)
-                                        .title("Your Location")
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                            }
                             currentUserLatLng = userLatLng;
 
                             // Set camera position only once
@@ -218,6 +262,9 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
                                     emailSent = false;
                                 }
                             }
+                        }else {
+                            // Si no se obtiene una ubicación, puede ser que la ubicación esté desactivada
+                            checkLocationEnabled();
                         }
                     });
         }

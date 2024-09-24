@@ -88,6 +88,23 @@ public class ReportarUI extends AppCompatActivity {
         verificadorAnuncio.iniciarVerificacion();
         //===================================================================================
 
+        // =================================================================================
+        /**
+         * Verificador Sesion cada 10 seg
+         */
+        EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                verificador.verificarEstado();
+                handler.postDelayed(this, 10000);
+            }
+        };
+        handler.post(runnable);
+        // =================================================================================
+
+
         if (username != null) {
             new ObtenerIdUsuarioTask().execute(username);
         }

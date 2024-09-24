@@ -71,23 +71,6 @@
         app:layout_constraintVertical_bias="0.696" />
 
     <EditText
-        android:id="@+id/txtNombresPerfil"
-        android:layout_width="206dp"
-        android:layout_height="44dp"
-        android:background="@drawable/edittext_border"
-        android:fontFamily="@font/adlam_display"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:textColor="#000000"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.623" />
-
-    <EditText
         android:id="@+id/txtUserNameLogin"
         android:layout_width="205dp"
         android:layout_height="44dp"
@@ -96,12 +79,32 @@
         android:hint="Username"
         android:textColor="#000000"
         android:textSize="12sp"
+        android:inputType="text"
+        android:imeOptions="actionNext"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.554" />
+
+    <EditText
+        android:id="@+id/txtPasswordPerfil"
+        android:layout_width="206dp"
+        android:layout_height="44dp"
+        android:background="@drawable/edittext_border"
+        android:fontFamily="@font/adlam_display"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:imeOptions="actionDone"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.623" />
 
 
     <TextView

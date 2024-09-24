@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,10 +19,8 @@ import com.example.ecoalerta.Interfaces.ApiService;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ecoalerta.R;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,17 +30,27 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.provider.Settings;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class UserUI extends AppCompatActivity {
 
     private TextView txtWelcome;
-    private Button btnLogout;
+    private Button btnDeslogear;
     private ImageView imgvPerfil;
     private ImageView imgvLoading; // Agregar esta línea
     private String username; // Declara username aquí
 
     private AnuncioChecker anuncioChecker;
     private int idUsuario; // Variable para almacenar el idUsuario
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,183 +61,185 @@ public class UserUI extends AppCompatActivity {
         // Inicializa el username desde el Intent
         username = getIntent().getStringExtra("username");
 
-        //===================================================================================
-        /**
-         * VERIRICADOR DE ANUNCIO
-         */
-        // En tu actividad o fragmento
+        // Verificador de anuncio
         VerificadorDeAnuncio verificadorAnuncio = new VerificadorDeAnuncio(this, username);
         verificadorAnuncio.iniciarVerificacion();
-        //===================================================================================
 
-
-        //===================================================================================
-        /**
-         * VERIRICADOR DE SESION CADA 10 SEGUNDOS
-         */
-        // Crear instancia del verificador de estado
+        // Verificador de sesión cada 10 segundos
         EstadoUsuarioVerificador verificador = new EstadoUsuarioVerificador(this);
-
-        // Iniciar el ciclo de verificación del estado del usuario
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 verificador.verificarEstado();
-                handler.postDelayed(this, 10000); // Ejecutar cada 3 segundos
+                handler.postDelayed(this, 10000);
             }
         };
         handler.post(runnable);
-        //===================================================================================
 
         // Inicializar elementos
         txtWelcome = findViewById(R.id.txtWelcome);
-        btnLogout = findViewById(R.id.btnLogout);
+        btnDeslogear = findViewById(R.id.btnLogout);
         imgvPerfil = findViewById(R.id.imgvPerfil);
-        imgvLoading = findViewById(R.id.imgvLoading); // Inicializar el ImageView para el GIF
-        Button btnVerMapa = findViewById(R.id.btnVerMapa); // Inicializar el botón para ver mapa
-        Button btnPerfil = findViewById(R.id.btnPerfil); // Inicializar el botón para ver mapa
-        Button btnReporte = findViewById(R.id.btnReporte); // Inicializar el botón para ver mapa
-        Button btnContactoMuni = findViewById(R.id.btnContactoMuni); // Inicializar el botón para contactomuni
-
-        // Obtener el username del Intent
-        String username = getIntent().getStringExtra("username");
+        imgvLoading = findViewById(R.id.imgvLoading);
+        Button btnVerMapa = findViewById(R.id.btnVerMapa);
+        Button btnPerfil = findViewById(R.id.btnPerfil);
+        Button btnReporte = findViewById(R.id.btnReporte);
+        Button btnContactoMuni = findViewById(R.id.btnContactoMuni);
 
         // Mostrar el GIF de carga
         if (imgvLoading != null) {
             Glide.with(this)
-                    .asGif() // Asegúrate de que Glide maneje GIFs
-                    .load(R.drawable.loadingperfil) // Nombre del archivo GIF en res/drawable
+                    .asGif()
+                    .load(R.drawable.loadingperfil)
                     .into(imgvLoading);
         }
 
-        // Mostrar un mensaje de bienvenida con el username
+        // Mensaje de bienvenida
         if (username != null) {
             txtWelcome.setText("Bienvenido, " + username);
-            // Usar CLASE PerfilImagenLoader para cargar la imagen de perfil
             PerfilImagenLoader perfilLoader = new PerfilImagenLoader(this, imgvLoading, imgvPerfil);
             perfilLoader.cargarImagen(username);
         } else {
             txtWelcome.setText("Bienvenido, Usuario");
         }
 
-        // Configurar el botón de logout
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        btnDeslogear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Mostrar la pantalla de carga
                 Intent cargaIntent = new Intent(UserUI.this, CargaUI.class);
                 startActivity(cargaIntent);
-
-                // Para limpiar el nombre de usuario cuando el usuario cierra sesión
                 SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.remove("username"); // O editor.clear() para borrar todos los datos
+                editor.remove("username");
                 editor.apply();
 
-                // Actualizar el estado del usuario a "logged_off" en el servidor
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            // URL del archivo PHP
-                            URL url = new URL( ApiService.BASE_URL + "update_status.php"); // Cambia esta URL a la URL correcta
+                            URL url = new URL(ApiService.BASE_URL + "update_status.php");
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setRequestMethod("POST");
                             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                             connection.setDoOutput(true);
 
                             // Enviar el nombre de usuario al servidor
-                            String postData = "username=" + username;
+                            String postData = "username=" + URLEncoder.encode(username, "UTF-8");
                             OutputStream os = connection.getOutputStream();
                             os.write(postData.getBytes());
                             os.flush();
                             os.close();
 
-                            // Leer la respuesta del servidor
+                            // Verificar el código de respuesta
                             int responseCode = connection.getResponseCode();
                             if (responseCode == HttpURLConnection.HTTP_OK) {
-                                // Éxito
+                                Log.d("Deslogear", "Estado actualizado exitosamente");
                             } else {
-                                // Error
+                                Log.d("Deslogear", "Error al actualizar estado: " + responseCode);
                             }
 
                             connection.disconnect();
                         } catch (Exception e) {
                             e.printStackTrace();
+                            Log.e("Deslogear", "Error en la solicitud: " + e.getMessage());
                         }
                     }
                 }).start();
 
-                // Redirigir a LoginUI después de un breve retraso para mostrar la pantalla de carga
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Intent intent = new Intent(UserUI.this, LoginUI.class);
                         startActivity(intent);
-                        finish(); // Cerrar la actividad actual para que no se pueda volver a ella
+                        finish();
                     }
-                }, 500); // Esperar 500 ms antes de iniciar LoginUI
+                }, 500);
             }
         });
 
         // Configurar el botón verMapa
-        if (username != null) {
-            btnVerMapa.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent mapIntent = new Intent(UserUI.this, MapUIUser.class);
-                    mapIntent.putExtra("username", username); // Pasar el nombre de usuario
-                    startActivity(mapIntent);
-                }
-            });
-        }
+        btnVerMapa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestLocationPermissions();
+            }
+        });
 
         // Configurar el botón perfil
-        if (username != null) {
-            btnPerfil.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent mapIntent = new Intent(UserUI.this, PerfilUIUser.class);
-                    mapIntent.putExtra("username", username); // Pasar el nombre de usuario
-                    startActivity(mapIntent);
-                }
-            });
-        }
+        btnPerfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapIntent = new Intent(UserUI.this, PerfilUIUser.class);
+                mapIntent.putExtra("username", username);
+                startActivity(mapIntent);
+            }
+        });
 
         // Configurar el botón reporte
-        if (username != null) {
-            btnReporte.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent mapIntent = new Intent(UserUI.this, ReportarUI.class);
-                    mapIntent.putExtra("username", username); // Pasar el nombre de usuario
-                    startActivity(mapIntent);
-                }
-            });
-        }
+        btnReporte.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapIntent = new Intent(UserUI.this, ReportarUI.class);
+                mapIntent.putExtra("username", username);
+                startActivity(mapIntent);
+            }
+        });
 
         // Configurar el botón contacto muni
-        if (username != null) {
-            btnContactoMuni.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent mapIntent = new Intent(UserUI.this, MunicipalidadContactUI.class);
-                    mapIntent.putExtra("username", username); // Pasar el nombre de usuario
-                    startActivity(mapIntent);
-                }
-            });
+        btnContactoMuni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapIntent = new Intent(UserUI.this, MunicipalidadContactUI.class);
+                mapIntent.putExtra("username", username);
+                startActivity(mapIntent);
+            }
+        });
+    }
+
+    private void requestLocationPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            checkLocationEnabled();
         }
     }
 
+    private void checkLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        } else {
+            openMap();
+        }
+    }
 
-        @Override
+    private void openMap() {
+        Intent mapIntent = new Intent(UserUI.this, MapUIUser.class);
+        mapIntent.putExtra("username", username);
+        startActivity(mapIntent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkLocationEnabled();
+            } else {
+                Toast.makeText(this, "Se necesita permiso de ubicación para continuar.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         Intent cargaIntent = new Intent(UserUI.this, CargaUI.class);
         startActivity(cargaIntent);
-
-        // Actualizar el estado del usuario a "logged_off" en el servidor
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -238,27 +249,15 @@ public class UserUI extends AppCompatActivity {
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     connection.setDoOutput(true);
-
-                    // Usa la variable username aquí
                     String postData = "username=" + username;
                     OutputStream os = connection.getOutputStream();
                     os.write(postData.getBytes());
                     os.flush();
                     os.close();
-
-                    // Limpiar el nombre de usuario cuando el usuario cierra sesión
                     SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.remove("username");
                     editor.apply();
-
-                    int responseCode = connection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        // Éxito
-                    } else {
-                        // Error
-                    }
-
                     connection.disconnect();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -266,7 +265,6 @@ public class UserUI extends AppCompatActivity {
             }
         }).start();
 
-        // Redirigir a LoginUI después de un breve retraso
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -276,5 +274,4 @@ public class UserUI extends AppCompatActivity {
             }
         }, 500);
     }
-
 }

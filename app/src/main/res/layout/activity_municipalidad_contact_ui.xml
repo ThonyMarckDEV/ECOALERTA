@@ -44,20 +44,23 @@
                 android:textColor="#000000"
                 android:textStyle="bold" /> <!-- Centrar texto -->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="4dp"
-                android:text="📞 01-123-4567"
-                android:textColor="#000000" /> <!-- Centrar texto -->
+            <!-- Centrar texto -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="4dp"
-                android:text="📞 01-987-6543"
+                android:text="Oficina de Atención al Ciudadano: 📞 913448923"
+                android:textAlignment="textStart"
+                android:textColor="#000000" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:text="Subgerencia de Transporte: 📞 949855607"
                 android:textColor="#000000" /> <!-- Centrar texto -->
 
             <TextView
@@ -65,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="16dp"
-                android:text="📞 01-555-1234"
+                android:text="Secretaría General: 📞 992355183"
                 android:textColor="#000000" /> <!-- Centrar texto -->
 
             <TextView
@@ -82,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="4dp"
-                android:text="✉️ contacto@municipalidadpiura.gob.pe"
+                android:text="✉️   info@munipiura.gob.pe"
                 android:textColor="#000000" /> <!-- Centrar texto -->
 
             <TextView
@@ -90,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="4dp"
-                android:text="✉️ servicio@municipalidadpiura.gob.pe"
+                android:text="✉️ imagenmunipiura@gmail.com"
                 android:textColor="#000000" /> <!-- Centrar texto -->
 
             <TextView
@@ -98,7 +101,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="16dp"
-                android:text="✉️ atencion@municipalidadpiura.gob.pe"
+                android:text="Sede Central Jr. Ayacucho N° 377 - Centro Cívico. - Piura - Piura - Piura - Perú (Referencia: Plaza de Armas)"
+                android:textAlignment="viewStart"
                 android:textColor="#000000" /> <!-- Centrar texto -->
 
         </LinearLayout>
