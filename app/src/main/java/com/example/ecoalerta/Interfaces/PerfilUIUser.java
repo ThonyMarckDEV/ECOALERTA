@@ -20,7 +20,7 @@ public class PerfilUIUser extends AppCompatActivity {
     private EditText txtNombres, txtApellidos, txtCorreo;
     private ImageView imgvPerfil;
     private ImageView imgvLoading;
-    private Button btnEditarCorreo, btnEditarNombres, btnEditarApellidos, btnActualizaPerfil,btnfaq,btnSubirFoto;
+    private Button btnEditarCorreo, btnEditarNombres, btnEditarApellidos, btnActualizaPerfil,btnfaq;
 
     // Variables para controlar la editabilidad de los campos
     private boolean isEmailEditable = false;
