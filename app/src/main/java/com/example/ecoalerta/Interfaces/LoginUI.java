@@ -41,6 +41,7 @@ public class LoginUI extends AppCompatActivity {
 
     private Intent cargaIntent;
     private EditText txtUsername, txtPassword;
+    private String currentVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,8 @@ public class LoginUI extends AppCompatActivity {
 
         // Llamamos a la clase UpdateChecker para verificar actualizaciones
         CheckUpdate updateChecker = new CheckUpdate(this);
+
+        // Llamamos a checkForUpdate y pasamos un nuevo UpdateListener con los métodos implementados
         updateChecker.checkForUpdate();
 
         // Aquí solicita permisos de ubicación
@@ -64,6 +67,7 @@ public class LoginUI extends AppCompatActivity {
         ImageView gifImageView4 = findViewById(R.id.gifImageView4);
         ImageView gifImageView5 = findViewById(R.id.gifImageView5);
 
+
         // Cargar el GIF en cada ImageView usando Glide
         Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView1);
         Glide.with(this).asGif().load(R.drawable.flor).into(gifImageView2);
@@ -76,6 +80,7 @@ public class LoginUI extends AppCompatActivity {
         txtPassword = findViewById(R.id.txtPasswordPerfil);
         Button btnLogin = findViewById(R.id.btnLogearse);
         TextView lblNuevo = findViewById(R.id.lblNuevo);
+        TextView lblResta = findViewById(R.id.lblRestablecer);
 
 
         SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
@@ -109,6 +114,13 @@ public class LoginUI extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     irRegister();
+                }
+            });
+
+            lblResta.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    irResta();
                 }
             });
         }
@@ -271,6 +283,22 @@ public class LoginUI extends AppCompatActivity {
             @Override
             public void run() {
                 Intent intent = new Intent(LoginUI.this, RegisterUI.class);
+                startActivity(intent);
+                finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
+            }
+        }, 500); // Esperar 500 ms antes de iniciar RegisterUI
+    }
+
+
+    private void irResta() {
+        // Mostrar la pantalla de carga antes de iniciar RegisterUI
+        startActivity(cargaIntent);
+
+        // Usar Handler para retrasar el inicio de la nueva actividad y permitir que la pantalla de carga se muestre
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(LoginUI.this, RestablecerUI.class);
                 startActivity(intent);
                 finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
             }

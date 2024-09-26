@@ -1,5 +1,6 @@
 package com.example.ecoalerta.Interfaces;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,11 +8,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
-
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,10 +24,26 @@ import java.net.URL;
 
 public class CheckUpdate {
     private Context context;
-    private String currentVersion = "1.0"; // Cambia esta variable según la versión actual de la app
+    private String currentVersion;
+
+    // Define una etiqueta para los logs
+    private static final String TAG = "CheckUpdate";
 
     public CheckUpdate(Context context) {
         this.context = context;
+        this.currentVersion = getAppVersion(); // Obtén la versión automáticamente
+    }
+
+    // Método para obtener la versión actual de la app
+    public String getAppVersion() {
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pInfo = pm.getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "1.1"; // Valor por defecto en caso de error
+        }
     }
 
     // Método para verificar si hay una actualización
@@ -33,6 +52,7 @@ public class CheckUpdate {
     }
 
     private class CheckUpdateTask extends AsyncTask<String, Void, String> {
+
         @Override
         protected String doInBackground(String... urls) {
             try {
@@ -55,9 +75,16 @@ public class CheckUpdate {
         protected void onPostExecute(String result) {
             if (result != null && !result.isEmpty()) {
                 try {
+                    // Agregar un log para mostrar el resultado completo recibido del servidor
+                    Log.d(TAG, "Resultado del servidor: " + result);
+
                     String[] data = result.split(",");
                     String serverVersion = data[0];
                     String downloadLink = data[1];
+
+                    // Mostrar la versión del servidor y el enlace de descarga en el log
+                    Log.d(TAG, "Versión del servidor: " + serverVersion);
+                    Log.d(TAG, "Enlace de descarga: " + downloadLink);
 
                     if (!serverVersion.equals(currentVersion)) {
                         showUpdateDialog(downloadLink);
@@ -74,8 +101,8 @@ public class CheckUpdate {
     }
 
     private void showUpdateDialog(final String downloadLink) {
-        new AlertDialog.Builder(context)
-                .setTitle("Actualización disponible")
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Actualización disponible")
                 .setMessage("Hay una nueva versión disponible. ¿Deseas actualizar?")
                 .setPositiveButton("Actualizar", new DialogInterface.OnClickListener() {
                     @Override
@@ -83,8 +110,20 @@ public class CheckUpdate {
                         downloadAndInstallApp(downloadLink);
                     }
                 })
-                .setNegativeButton("Cancelar", null)
-                .show();
+                .setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Cerrar la aplicación al presionar "Salir"
+                        ((Activity) context).finish(); // Cierra la actividad actual
+                        System.exit(0); // Finaliza la aplicación
+                    }
+                });
+
+        // Crear el diálogo y hacerlo no cancelable
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false); // Evita que se cierre con el botón de retroceso
+        dialog.setCanceledOnTouchOutside(false); // Evita que se cierre al tocar fuera del diálogo
+        dialog.show();
     }
 
     private void downloadAndInstallApp(final String downloadLink) {
@@ -107,7 +146,7 @@ public class CheckUpdate {
                     int fileLength = connection.getContentLength();
 
                     InputStream input = new BufferedInputStream(url.openStream());
-                    String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/app_update.apk";
+                    String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/ECOALERTA_UPDATE.apk";
                     FileOutputStream output = new FileOutputStream(filePath);
 
                     byte[] data = new byte[4096];
