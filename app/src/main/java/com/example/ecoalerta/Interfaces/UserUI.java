@@ -86,6 +86,7 @@ public class UserUI extends AppCompatActivity {
         Button btnPerfil = findViewById(R.id.btnPerfil);
         Button btnReporte = findViewById(R.id.btnReporte);
         Button btnContactoMuni = findViewById(R.id.btnContactoMuni);
+        Button btnverCalendario = findViewById(R.id.btnCalendario);
 
         // Mostrar el GIF de carga
         if (imgvLoading != null) {
@@ -188,6 +189,16 @@ public class UserUI extends AppCompatActivity {
         });
 
         // Configurar el botón contacto muni
+        btnverCalendario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapIntent = new Intent(UserUI.this, CalendarioUI.class);
+                mapIntent.putExtra("username", username);
+                startActivity(mapIntent);
+            }
+        });
+
+        // Configurar el botón calendario
         btnContactoMuni.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,6 +207,7 @@ public class UserUI extends AppCompatActivity {
                 startActivity(mapIntent);
             }
         });
+
     }
 
     private void requestLocationPermissions() {

@@ -28,6 +28,12 @@
         android:theme="@style/Theme.ECOALERTA"
         tools:targetApi="31">
         <activity
+            android:name=".Interfaces.RutaDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Interfaces.CalendarioUI"
+            android:exported="false" />
+        <activity
             android:name=".Interfaces.NuevaContraUI"
             android:exported="false" />
         <activity

@@ -13,8 +13,8 @@ android {
         applicationId = "com.example.ecoalerta"
         minSdk = 26
         targetSdk = 34
-        versionCode = 6  //CAMBIAR POR VERSION
-        versionName = "1.6" //CAMBIAR POR VERSION
+        versionCode = 7  //CAMBIAR POR VERSION
+        versionName = "1.7" //CAMBIAR POR VERSION
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

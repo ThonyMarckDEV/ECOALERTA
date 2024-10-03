@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="16dp"
-                android:text="Contacto Municipalidad de Piura"
+                android:text="Contacto Municipalidad de Sullana"
                 android:textColor="#000000"
                 android:textSize="24sp"
                 android:textStyle="bold" /> <!-- Centrar texto -->
@@ -51,25 +51,30 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="4dp"
-                android:text="Oficina de Atención al Ciudadano: 📞 913448923"
+                android:text="Gerencia de Administración Tributaria: 📞 961229287"
                 android:textAlignment="textStart"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="12sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="4dp"
-                android:text="Subgerencia de Transporte: 📞 949855607"
-                android:textColor="#000000" /> <!-- Centrar texto -->
+                android:text="Defensa Civil: 📞 956946007"
+                android:textAlignment="textStart"
+                android:textColor="#000000"
+                android:textSize="12sp" /> <!-- Centrar texto -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="16dp"
-                android:text="Secretaría General: 📞 992355183"
-                android:textColor="#000000" /> <!-- Centrar texto -->
+                android:text="Subgerencia de Control Municipal: 📞 073-409569"
+                android:textAlignment="textStart"
+                android:textColor="#000000"
+                android:textSize="12sp" /> <!-- Centrar texto -->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -85,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="4dp"
-                android:text="✉️   info@munipiura.gob.pe"
+                android:text="✉️   info@munisullana.gob.pe"
                 android:textColor="#000000" /> <!-- Centrar texto -->
 
             <TextView
@@ -93,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="4dp"
-                android:text="✉️ imagenmunipiura@gmail.com"
+                android:text="✉️ imagenmunisullana@gmail.com"
                 android:textColor="#000000" /> <!-- Centrar texto -->
 
             <TextView
@@ -101,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="16dp"
-                android:text="Sede Central Jr. Ayacucho N° 377 - Centro Cívico. - Piura - Piura - Piura - Perú (Referencia: Plaza de Armas)"
+                android:text="Sede Palacio Municipal: Calle Bolivar n°160 - Sullana - Sullana - Piura - Perú"
                 android:textAlignment="viewStart"
                 android:textColor="#000000" /> <!-- Centrar texto -->
 
