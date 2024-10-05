@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/adlam_display"
                 android:paddingBottom="16dp"
-                android:text="ECOALERTA es una aplicación diseñada para ayudar a los usuarios a gestionar su perfil, visualizar el mapa de los camiones de basura, consultar un calendario de recolección, hacer reportes de incidencias y conectarse con la municipalidad de Piura."
+                android:text="ECOALERTA es una aplicación diseñada para ayudar a los usuarios a gestionar su perfil, visualizar el mapa de los camiones de basura, consultar un calendario de recolección, hacer reportes de incidencias y conectarse con la municipalidad de Sullana."
                 android:textColor="#000000"
                 android:textSize="10sp" />
 
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/adlam_display"
                 android:paddingBottom="4dp"
-                android:text="7. ¿Cómo puedo conectarme con la municipalidad de Piura?"
+                android:text="7. ¿Cómo puedo conectarme con la municipalidad de Sullana?"
                 android:textColor="#000000"
                 android:textSize="10sp"
                 android:textStyle="bold" />

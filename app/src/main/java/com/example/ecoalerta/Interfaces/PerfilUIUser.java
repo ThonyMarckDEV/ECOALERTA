@@ -22,6 +22,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.ecoalerta.Clases.AnuncioService;
 import com.example.ecoalerta.R;
 
 import org.json.JSONObject;
@@ -99,8 +100,9 @@ public class PerfilUIUser extends AppCompatActivity {
          * VERIRICADOR DE ANUNCIO
          */
         // En tu actividad o fragmento
-        VerificadorDeAnuncio verificadorAnuncio = new VerificadorDeAnuncio(this, username);
-        verificadorAnuncio.iniciarVerificacion();
+        Intent serviceIntent = new Intent(this, AnuncioService.class);
+        serviceIntent.putExtra("idUsuario", username);  // Pasar el idUsuario o username al servicio
+        startForegroundService(serviceIntent);  // Para Android O y superior
         //===================================================================================
 
         // Referencias a los campos EditText y otros elementos

@@ -135,8 +135,8 @@
 
     <Button
         android:id="@+id/btnReporte"
-        android:layout_width="62dp"
-        android:layout_height="50dp"
+        android:layout_width="72dp"
+        android:layout_height="61dp"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -147,15 +147,15 @@
 
     <Button
         android:id="@+id/btnContactoMuni"
-        android:layout_width="57dp"
-        android:layout_height="50dp"
+        android:layout_width="92dp"
+        android:layout_height="78dp"
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.864"
+        app:layout_constraintHorizontal_bias="0.885"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.063" /> <!-- Nombre del archivo GIF en res/drawable -->
+        app:layout_constraintVertical_bias="0.045" /> <!-- Nombre del archivo GIF en res/drawable -->
 
 
 

@@ -57,6 +57,8 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
     private Handler handlerubi; // Mover el Handler a nivel de clase
     private Runnable updateLocationTask; // Mover el Runnable a nivel de clase
     private boolean isUpdatingLocation = false; // Flag para controlar la actualización de ubicación
+    private LatLng previousLocation = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,14 +316,57 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
                     if (task.isSuccessful() && task.getResult() != null) {
                         List<Double> location = (List<Double>) task.getResult().get("ubicacion");
                         if (location != null) {
-                            LatLng latLng = new LatLng(location.get(0), location.get(1));
+                            LatLng newLocation = new LatLng(location.get(0), location.get(1));
+
+                            // Lógica para cambiar la imagen del camión
+                            if (previousLocation != null) {
+                                // Calcular la diferencia en latitud y longitud
+                                double deltaLat = newLocation.latitude - previousLocation.latitude;
+                                double deltaLng = newLocation.longitude - previousLocation.longitude;
+
+                                // Determinar la dirección de movimiento
+                                if (Math.abs(deltaLat) > Math.abs(deltaLng)) {
+                                    if (deltaLat > 0) {
+                                        // El camión se mueve hacia arriba
+                                        updateCamionMarker(R.drawable.camion_arriba);
+                                    } else {
+                                        // El camión se mueve hacia abajo
+                                        updateCamionMarker(R.drawable.camion_abajo);
+                                    }
+                                } else {
+                                    if (deltaLng > 0) {
+                                        // El camión se mueve hacia la derecha
+                                        updateCamionMarker(R.drawable.camion_derecha);
+                                    } else {
+                                        // El camión se mueve hacia la izquierda
+                                        updateCamionMarker(R.drawable.camion_izquierda);
+                                    }
+                                }
+
+                                // Detectar movimiento diagonal
+                                if (Math.abs(deltaLat) > 0 && Math.abs(deltaLng) > 0) {
+                                    if (deltaLat > 0 && deltaLng > 0) {
+                                        updateCamionMarker(R.drawable.camion_diagonal_arriba_derecha);
+                                    } else if (deltaLat > 0 && deltaLng < 0) {
+                                        updateCamionMarker(R.drawable.camion_diagonal_arriba_izquierda);
+                                    } else if (deltaLat < 0 && deltaLng > 0) {
+                                        updateCamionMarker(R.drawable.camion_diagonal_abajo_derecha);
+                                    } else if (deltaLat < 0 && deltaLng < 0) {
+                                        updateCamionMarker(R.drawable.camion_diagonal_abajo_izquierda);
+                                    }
+                                }
+                            }
+
+                            // Actualizar la posición anterior
+                            previousLocation = newLocation;
+
+                            // Actualizar la posición del marcador con la nueva ubicación
                             if (basureroMarker != null) {
-                                basureroMarker.setPosition(latLng);
+                                basureroMarker.setPosition(newLocation);
                             } else {
                                 basureroMarker = mMap.addMarker(new MarkerOptions()
-                                        .position(latLng)
-                                        .title("Basurero")
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.camion_icono)));
+                                        .position(newLocation)
+                                        .title("Camión de basura"));
                             }
                         }
                     } else {
@@ -329,6 +374,14 @@ public class MapUIUser extends FragmentActivity implements OnMapReadyCallback {
                     }
                 });
     }
+
+
+    private void updateCamionMarker(int imageResource) {
+        if (basureroMarker != null) {
+            basureroMarker.setIcon(BitmapDescriptorFactory.fromResource(imageResource));
+        }
+    }
+
 
     @Override
     public void onBackPressed() {

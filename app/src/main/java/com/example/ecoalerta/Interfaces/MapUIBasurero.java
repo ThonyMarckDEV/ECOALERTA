@@ -40,6 +40,7 @@ public class MapUIBasurero extends AppCompatActivity implements OnMapReadyCallba
     private Marker lastMarker;
     private MapView mapView;
     private String username;
+    private LatLng previousLocation = null; // Guardar la ubicación anterior del camión
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,21 +95,60 @@ public class MapUIBasurero extends AppCompatActivity implements OnMapReadyCallba
                     if (e != null || snapshot == null || !snapshot.exists()) {
                         return;
                     }
-                    // Cargar el icono personalizado desde los recursos
-                    BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.camion_icono);
 
                     List<Double> location = (List<Double>) snapshot.get("ubicacion");
                     if (location != null) {
-                        LatLng latLng = new LatLng(location.get(0), location.get(1));
+                        LatLng newLocation = new LatLng(location.get(0), location.get(1));
 
-                        // Eliminar el último marcador si existe
-                        if (lastMarker != null) {
-                            lastMarker.remove();
+                        // Calcular la diferencia entre la ubicación actual y la anterior para determinar la dirección
+                        if (previousLocation != null) {
+                            double deltaLat = newLocation.latitude - previousLocation.latitude;
+                            double deltaLng = newLocation.longitude - previousLocation.longitude;
+
+                            // Determinar la dirección de movimiento y cambiar el ícono del camión
+                            BitmapDescriptor icon;
+                            if (Math.abs(deltaLat) > Math.abs(deltaLng)) {
+                                if (deltaLat > 0) {
+                                    icon = BitmapDescriptorFactory.fromResource(R.drawable.camion_arriba);
+                                } else {
+                                    icon = BitmapDescriptorFactory.fromResource(R.drawable.camion_abajo);
+                                }
+                            } else {
+                                if (deltaLng > 0) {
+                                    icon = BitmapDescriptorFactory.fromResource(R.drawable.camion_derecha);
+                                } else {
+                                    icon = BitmapDescriptorFactory.fromResource(R.drawable.camion_izquierda);
+                                }
+                            }
+
+                            // Detectar movimiento diagonal y actualizar el ícono si es necesario
+                            if (Math.abs(deltaLat) > 0 && Math.abs(deltaLng) > 0) {
+                                if (deltaLat > 0 && deltaLng > 0) {
+                                    icon = BitmapDescriptorFactory.fromResource(R.drawable.camion_diagonal_arriba_derecha);
+                                } else if (deltaLat > 0 && deltaLng < 0) {
+                                    icon = BitmapDescriptorFactory.fromResource(R.drawable.camion_diagonal_arriba_izquierda);
+                                } else if (deltaLat < 0 && deltaLng > 0) {
+                                    icon = BitmapDescriptorFactory.fromResource(R.drawable.camion_diagonal_abajo_derecha);
+                                } else if (deltaLat < 0 && deltaLng < 0) {
+                                    icon = BitmapDescriptorFactory.fromResource(R.drawable.camion_diagonal_abajo_izquierda);
+                                }
+                            }
+
+                            // Eliminar el último marcador si existe
+                            if (lastMarker != null) {
+                                lastMarker.remove();
+                            }
+
+                            // Agregar un nuevo marcador con el ícono actualizado
+                            lastMarker = mMap.addMarker(new MarkerOptions().position(newLocation).title("Ubicación actual").icon(icon));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLocation, 18f));
+
+                            // Actualizar la ubicación anterior
+                            previousLocation = newLocation;
+                        } else {
+                            // Si no hay una ubicación anterior, inicialízala
+                            previousLocation = newLocation;
                         }
-
-                        // Agregar un nuevo marcador
-                        lastMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Ubicación actual").icon(icon));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18f));
                     }
                 });
     }
