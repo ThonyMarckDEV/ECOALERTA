@@ -63,7 +63,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/adlam_display"
-                    android:text="Ruta 1: Av. Principal - Av. Secundaria"
+                    android:text="Ruta 1: PASAJE  1 -  PASAJE 9  1  etapa Lz. Albújar  Manzana F"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -106,7 +106,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/adlam_display"
-                    android:text="Ruta 2: Av. Tercera - Av. Cuarta"
+                    android:text="Ruta 2:  PASAJE  1 - PASAJE  3 - PASAJE 4  - PASAJE  16   1 etapa  3 "
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -149,7 +149,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/adlam_display"
-                    android:text="Ruta 2: Av. Tercera - Av. Cuarta"
+                    android:text="Ruta 3: Lz. Albújar Manzana  J ,  R  , E.  "
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -192,7 +192,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/adlam_display"
-                    android:text="Ruta 2: Av. Tercera - Av. Cuarta"
+                    android:text="Ruta 4: PASAJE  5 - PASAJE  9, PASAJE  11    1  etapa  Lz.  Albújar Manzana  k"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold" />

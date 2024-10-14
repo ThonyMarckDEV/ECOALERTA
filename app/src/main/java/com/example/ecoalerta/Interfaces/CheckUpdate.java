@@ -113,8 +113,6 @@ public class CheckUpdate {
                 .setNegativeButton("Salir", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Cerrar la aplicación al presionar "Salir"
-                        ((Activity) context).finish(); // Cierra la actividad actual
                         System.exit(0); // Finaliza la aplicación
                     }
                 });
@@ -134,6 +132,8 @@ public class CheckUpdate {
         progressDialog.setIndeterminate(false);
         progressDialog.setMax(100);
         progressDialog.setProgress(0);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false); // Evita que se cierre al tocar fuera del diálogo
         progressDialog.show();
 
         new AsyncTask<String, Integer, String>() {
@@ -179,11 +179,23 @@ public class CheckUpdate {
                 progressDialog.dismiss();
                 if (filePath != null) {
                     installApp(filePath);
+                    closeAppAfterInstall(); // Cierra la aplicación después de iniciar la instalación
                 } else {
                     Toast.makeText(context, "Error al descargar la actualización", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute();
+    }
+
+
+    private void closeAppAfterInstall() {
+        // Usamos finishAffinity() para cerrar todas las actividades de la app
+        if (context instanceof Activity) {
+            ((Activity) context).finishAffinity();
+        }
+
+        // Opcionalmente, si deseas asegurarte de que se cierra todo el proceso
+        System.exit(0);  // Cierra el proceso completo de la aplicación
     }
 
     private void installApp(String filePath) {

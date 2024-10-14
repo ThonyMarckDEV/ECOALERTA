@@ -58,6 +58,12 @@ public class UserUI extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_user_ui);
 
+        // Llamamos a la clase UpdateChecker para verificar actualizaciones
+        CheckUpdate updateChecker = new CheckUpdate(this);
+
+        // Llamamos a checkForUpdate y pasamos un nuevo UpdateListener con los métodos implementados
+        updateChecker.checkForUpdate();
+
         // Inicializa el username desde el Intent
         username = getIntent().getStringExtra("username");
 

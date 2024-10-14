@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.ecoalerta.Clases.LocationForegroundService;
 import com.example.ecoalerta.Clases.LocationHelper;
 import com.example.ecoalerta.Clases.LocationService;
 import com.example.ecoalerta.R;
@@ -157,17 +158,31 @@ public class MapUIBasurero extends AppCompatActivity implements OnMapReadyCallba
     protected void onResume() {
         super.onResume();
         mapView.onResume();
+        // Detén el servicio en segundo plano cuando el usuario vuelva a la app
+        Intent serviceIntent = new Intent(this, LocationForegroundService.class);
+        stopService(serviceIntent);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        // Inicia el servicio en segundo plano cuando la actividad pasa a segundo plano
+        Intent serviceIntent = new Intent(this, LocationForegroundService.class);
+        startForegroundService(serviceIntent);
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Detén el servicio si la actividad se destruye
+        Intent serviceIntent = new Intent(this, LocationForegroundService.class);
+        stopService(serviceIntent);
     }
 
     @Override
@@ -182,7 +197,18 @@ public class MapUIBasurero extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public void onBackPressed() {
-        // Obtener el nombre del usuario (esto depende de cómo lo estés manejando en tu aplicación)
+        // Detén el servicio en segundo plano antes de salir
+        Intent serviceIntent = new Intent(this, LocationForegroundService.class);
+        stopService(serviceIntent);
+
+        // Confirmar que el servicio se detiene correctamente
+        new Handler().postDelayed(() -> {
+            // Asegúrate de que el servicio se haya detenido correctamente
+            stopService(serviceIntent);
+            super.onBackPressed();
+        }, 500); // Esperar un poco para asegurar que el servicio se detenga
+
+        // Obtener el nombre del usuario
         String userName = username; // Reemplaza esto con el nombre real del usuario
 
         // Mostrar la pantalla de carga antes de volver a UserUI
@@ -190,17 +216,14 @@ public class MapUIBasurero extends AppCompatActivity implements OnMapReadyCallba
         startActivity(cargaIntent);
 
         // Usar Handler para retrasar el inicio de UserUI y permitir que la pantalla de carga se muestre
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Asegúrate de que la pantalla de carga esté cerrada antes de iniciar UserUI
-                Intent intent = new Intent(MapUIBasurero.this, BasureroUI.class);
-                // Agregar el nombre del usuario al Intent
-                intent.putExtra("username", userName);
+        new Handler().postDelayed(() -> {
+            // Asegúrate de que la pantalla de carga esté cerrada antes de iniciar UserUI
+            Intent intent = new Intent(MapUIBasurero.this, BasureroUI.class);
+            // Agregar el nombre del usuario al Intent
+            intent.putExtra("username", userName);
 
-                startActivity(intent);
-                finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
-            }
+            startActivity(intent);
+            finish(); // Cerrar la actividad actual para que el usuario no vuelva a ella
         }, 500); // Esperar 500 ms antes de iniciar UserUI
     }
 
