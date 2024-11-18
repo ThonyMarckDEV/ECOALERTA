@@ -21,11 +21,11 @@ import android.content.SharedPreferences;
 
 public class GestionarReporteUI extends AppCompatActivity {
 
-    private TextView tvIdReporte, tvIdUsuario, tvFecha, tvDescripcion;
+    private TextView tvIdReporte, tvIdUsuario, tvFecha, tvDescripcion, txvReferencia;
     private ImageView imgvReporte;
     private Button btnRevisar;
     private ProgressDialog progressDialog;  // Declarar el ProgressDialog
-    private String idReporte, idUsuario, fecha, descripcion, imagenUrl;
+    private String idReporte, idUsuario, fecha, descripcion, imagenUrl , referencia;
     private String username; // Declara username aquí
 
     @Override
@@ -44,6 +44,7 @@ public class GestionarReporteUI extends AppCompatActivity {
         tvDescripcion = findViewById(R.id.tvDescripcion);
         imgvReporte = findViewById(R.id.imgvReporte);
         btnRevisar = findViewById(R.id.btnRevisarReporte);
+        txvReferencia = findViewById(R.id.tvReferencia);
 
         // Obtener los datos del Intent
         Intent intent = getIntent();
@@ -51,6 +52,7 @@ public class GestionarReporteUI extends AppCompatActivity {
         idUsuario = intent.getStringExtra("idUsuario");
         fecha = intent.getStringExtra("fecha");
         descripcion = intent.getStringExtra("descripcion");
+        referencia = intent.getStringExtra("referencia");
         imagenUrl = intent.getStringExtra("imagenUrl");
 
         // Mostrar los datos en la UI
@@ -58,6 +60,7 @@ public class GestionarReporteUI extends AppCompatActivity {
         tvIdUsuario.setText("ID Usuario: " + idUsuario);
         tvFecha.setText("Fecha: " + fecha);
         tvDescripcion.setText("Descripción: " + descripcion);
+        txvReferencia.setText("Referencia: " + referencia);
 
         // Cargar la imagen en el ImageView usando Picasso
         Picasso.get().load(imagenUrl).into(imgvReporte);

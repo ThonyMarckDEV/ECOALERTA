@@ -10,15 +10,16 @@
         android:scaleType="centerCrop"
         android:src="@drawable/carga_ui" /> <!-- Cambia 'carga_ui' por tu recurso de fondo -->
 
-    <!-- Contenedor que centra el reporte en el medio y más pequeño -->
+    <!-- Contenedor flotante para el reporte -->
     <LinearLayout
         android:layout_width="320dp"
-        android:layout_height="488dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="#CCFFFFFF"
         android:elevation="8dp"
         android:orientation="vertical"
-        android:padding="16dp"> <!-- Sombra para que se vea flotante -->
+        android:padding="16dp"
+        android:gravity="center_horizontal"> <!-- Alinear horizontalmente -->
 
         <!-- Título -->
         <TextView
@@ -32,10 +33,10 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <!-- Imagen del reporte en tamaño más pequeño -->
+        <!-- Imagen del reporte -->
         <ImageView
             android:id="@+id/imgvReporte"
-            android:layout_width="294dp"
+            android:layout_width="match_parent"
             android:layout_height="162dp"
             android:layout_marginBottom="20dp"
             android:scaleType="centerCrop" />
@@ -43,7 +44,7 @@
         <!-- ID del reporte -->
         <TextView
             android:id="@+id/tvIdReporte"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/adlam_display"
@@ -55,7 +56,7 @@
         <!-- ID del usuario -->
         <TextView
             android:id="@+id/tvIdUsuario"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/adlam_display"
@@ -66,7 +67,7 @@
         <!-- Fecha del reporte -->
         <TextView
             android:id="@+id/tvFecha"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/adlam_display"
@@ -77,11 +78,22 @@
         <!-- Descripción del reporte -->
         <TextView
             android:id="@+id/tvDescripcion"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="8dp"
             android:fontFamily="@font/adlam_display"
             android:text="Descripción: "
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <!-- Referencia del reporte -->
+        <TextView
+            android:id="@+id/tvReferencia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:fontFamily="@font/adlam_display"
+            android:text="Referencia: "
             android:textColor="#000000"
             android:textSize="16sp" />
 
@@ -90,6 +102,7 @@
             android:id="@+id/btnRevisarReporte"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:backgroundTint="#6DB34F"
             android:fontFamily="@font/adlam_display"
             android:padding="10dp"

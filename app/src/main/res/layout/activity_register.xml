@@ -47,9 +47,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.171"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.422" />
+        app:layout_constraintVertical_bias="0.367" />
 
     <Button
         android:id="@+id/btnRegistrarse"
@@ -68,41 +69,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.96" />
 
-    <EditText
-        android:id="@+id/txtPasswordRegister"
-        android:layout_width="206dp"
-        android:layout_height="44dp"
-        android:background="@drawable/edittext_border"
-        android:fontFamily="@font/adlam_display"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:textColor="#000000"
-        android:textSize="12sp"
-        android:imeOptions="actionDone"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.473"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.851" />
 
-    <EditText
-        android:id="@+id/txtNombresRegister"
-        android:layout_width="206dp"
-        android:layout_height="44dp"
-        android:background="@drawable/edittext_border"
-        android:fontFamily="@font/adlam_display"
-        android:hint="Nombres"
-        android:textColor="#000000"
-        android:textSize="12sp"
-        android:inputType="text"
-        android:imeOptions="actionNext"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.478"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.595" />
 
     <EditText
         android:id="@+id/txtUsernameRegister"
@@ -111,16 +78,34 @@
         android:background="@drawable/edittext_border"
         android:fontFamily="@font/adlam_display"
         android:hint="Username"
+        android:inputType="text"
+        android:nextFocusDown="@id/txtNombresRegister"
         android:textColor="#000000"
         android:textSize="12sp"
-        android:inputType="text"
-        android:imeOptions="actionNext"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.478"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.516" />
+        app:layout_constraintVertical_bias="0.449" />
+
+    <EditText
+        android:id="@+id/txtNombresRegister"
+        android:layout_width="206dp"
+        android:layout_height="44dp"
+        android:background="@drawable/edittext_border"
+        android:fontFamily="@font/adlam_display"
+        android:hint="Nombres"
+        android:inputType="text"
+        android:nextFocusDown="@id/txtApellidosRegister"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.529" />
 
     <EditText
         android:id="@+id/txtApellidosRegister"
@@ -129,16 +114,34 @@
         android:background="@drawable/edittext_border"
         android:fontFamily="@font/adlam_display"
         android:hint="Apellidos"
+        android:inputType="text"
+        android:nextFocusDown="@id/txtDniRegister"
         android:textColor="#000000"
         android:textSize="12sp"
-        android:inputType="text"
-        android:imeOptions="actionNext"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.478"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.681" />
+        app:layout_constraintVertical_bias="0.608" />
+
+    <EditText
+        android:id="@+id/txtDniRegister"
+        android:layout_width="206dp"
+        android:layout_height="44dp"
+        android:background="@drawable/edittext_border"
+        android:fontFamily="@font/adlam_display"
+        android:hint="DNI"
+        android:inputType="number"
+        android:nextFocusDown="@id/txtEmailRegister"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.688" />
 
     <EditText
         android:id="@+id/txtEmailRegister"
@@ -147,15 +150,33 @@
         android:background="@drawable/edittext_border"
         android:fontFamily="@font/adlam_display"
         android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:nextFocusDown="@id/txtPasswordRegister"
         android:textColor="#000000"
         android:textSize="12sp"
-        android:inputType="text"
-        android:imeOptions="actionNext"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.77" />
+        app:layout_constraintVertical_bias="0.771" />
+
+    <EditText
+        android:id="@+id/txtPasswordRegister"
+        android:layout_width="206dp"
+        android:layout_height="44dp"
+        android:background="@drawable/edittext_border"
+        android:fontFamily="@font/adlam_display"
+        android:hint="Password"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.855" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,6 +39,14 @@
         android:text="Descripción"
         android:textColor="#000000" />
 
+    <TextView
+        android:id="@+id/tvReferencia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/adlam_display"
+        android:text="Referencia"
+        android:textColor="#000000" />
+
     <ImageView
         android:id="@+id/imgvReporte"
         android:layout_width="240dp"

@@ -42,7 +42,7 @@ import java.util.Locale;
 public class ReportarUI extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int TAKE_PHOTO_REQUEST = 1;
-    private EditText textArea;
+    private EditText textArea,textreferencia;
     private TextView txvfecha;
     private ImageView imgvReporte;
     private Button btnCargarFoto, btnReportar;
@@ -68,6 +68,7 @@ public class ReportarUI extends AppCompatActivity {
         imgvReporte = findViewById(R.id.imgvReporte);
         btnCargarFoto = findViewById(R.id.btnCargarFoto);
         btnReportar = findViewById(R.id.btnReportar);
+        textreferencia = findViewById(R.id.txtReferencia);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Enviando reporte...");
@@ -241,9 +242,14 @@ public class ReportarUI extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                 String fechaHora = sdf.format(new Date());
                 String descripcion = textArea.getText().toString();
+                String referencia = textreferencia.getText().toString();
 
-                // Construir los parámetros del reporte con la URL de la imagen
-                String postData = "idUsuario=" + idUsuario + "&fecha=" + fechaHora + "&descripcion=" + descripcion + "&imagen_url=" + imageUrl;  // Cambié 'imagen' a 'imagen_url'
+                // Construir los parámetros del reporte con la referencia
+                String postData = "idUsuario=" + idUsuario +
+                        "&fecha=" + fechaHora +
+                        "&descripcion=" + descripcion +
+                        "&imagen_url=" + imageUrl +
+                        "&referencia=" + referencia; // Agregar la referencia
 
                 // Enviar los datos del reporte
                 OutputStream os = reportConnection.getOutputStream();
@@ -273,6 +279,7 @@ public class ReportarUI extends AppCompatActivity {
                 imgvReporte.setImageResource(android.R.color.transparent);
                 imageBitmap = null;
                 imageUrl = null;  // Limpiar la URL después de enviar
+                textreferencia.setText("");
                 textArea.clearFocus();
             } else {
                 Toast.makeText(ReportarUI.this, "Error al enviar reporte", Toast.LENGTH_SHORT).show();

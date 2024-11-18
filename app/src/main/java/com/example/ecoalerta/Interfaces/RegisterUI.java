@@ -21,14 +21,14 @@ import java.io.InputStreamReader;
 
 public class RegisterUI extends AppCompatActivity {
 
-    private EditText txtUsername, txtNombres, txtApellidos, txtEmail, txtPassword;
+    private EditText txtUsername, txtNombres, txtApellidos, txtEmail, txtPassword, txtDNI;
     private Button btnRegistrarse;
     private Intent cargaIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this); // Asegúrate de que este método esté configurado correctamente
         setContentView(R.layout.activity_register);
 
         // Referencias a los campos del formulario
@@ -37,6 +37,7 @@ public class RegisterUI extends AppCompatActivity {
         txtApellidos = findViewById(R.id.txtApellidosRegister);
         txtEmail = findViewById(R.id.txtEmailRegister);
         txtPassword = findViewById(R.id.txtPasswordRegister);
+        txtDNI = findViewById(R.id.txtDniRegister); // Asegúrate de que exista en tu layout
         btnRegistrarse = findViewById(R.id.btnRegistrarse);
 
         // Inicializar la Intent para la pantalla de carga
@@ -45,16 +46,55 @@ public class RegisterUI extends AppCompatActivity {
         btnRegistrarse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Validar campos si es necesario antes de registrar
-                new RegisterTask().execute(
-                        txtUsername.getText().toString(),
-                        txtNombres.getText().toString(),
-                        txtApellidos.getText().toString(),
-                        txtEmail.getText().toString(),
-                        txtPassword.getText().toString()
-                );
+                // Usar la validación antes de ejecutar la tarea de registro
+                if (validarCampos()) {
+                    new RegisterTask().execute(
+                            txtUsername.getText().toString(),
+                            txtNombres.getText().toString(),
+                            txtApellidos.getText().toString(),
+                            txtEmail.getText().toString(),
+                            txtPassword.getText().toString(),
+                            txtDNI.getText().toString() // Incluye el DNI
+                    );
+                }
             }
         });
+    }
+
+    // Método para validar los campos
+    private boolean validarCampos() {
+        String username = txtUsername.getText().toString().trim();
+        String nombres = txtNombres.getText().toString().trim();
+        String apellidos = txtApellidos.getText().toString().trim();
+        String email = txtEmail.getText().toString().trim();
+        String password = txtPassword.getText().toString().trim();
+        String dni = txtDNI.getText().toString().trim();
+
+        // Validar que los campos no estén vacíos
+        if (username.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || email.isEmpty() || password.isEmpty() || dni.isEmpty()) {
+            Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validar el DNI (8 dígitos)
+        if (!dni.matches("\\d{8}")) {
+            Toast.makeText(this, "El DNI debe contener exactamente 8 dígitos", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validar el email
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Ingresa un correo electrónico válido", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validar la contraseña (al menos 8 caracteres, 1 mayúscula, 1 símbolo)
+        if (!password.matches("^(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$")) {
+            Toast.makeText(this, "Contraseña debe tener,  (8 caracteres,mayúscula y símbolo", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
     }
 
     private class RegisterTask extends AsyncTask<String, Void, String> {
@@ -72,6 +112,7 @@ public class RegisterUI extends AppCompatActivity {
             String apellidos = params[2];
             String email = params[3];
             String password = params[4];
+            String dni = params[5]; // Agregar dni
 
             try {
                 URL url = new URL(ApiService.BASE_URL + "register.php");
@@ -85,7 +126,8 @@ public class RegisterUI extends AppCompatActivity {
                         "&nombres=" + nombres +
                         "&apellidos=" + apellidos +
                         "&email=" + email +
-                        "&password=" + password;
+                        "&password=" + password +
+                        "&dni=" + dni; // Incluir dni
 
                 OutputStream os = connection.getOutputStream();
                 os.write(postData.getBytes());
@@ -140,6 +182,8 @@ public class RegisterUI extends AppCompatActivity {
             }
         }
     }
+
+
 
     @Override
     public void onBackPressed() {

@@ -86,6 +86,7 @@ public class ListarReportesUI extends AppCompatActivity {
                                 jsonObject.getString("idUsuario"),
                                 jsonObject.getString("fecha"),
                                 jsonObject.getString("descripcion"),
+                                jsonObject.getString("referencia"),
                                 jsonObject.getString("imagen_url") // Obtener la URL de la imagen
                         );
                         reporteList.add(reporte);
@@ -124,13 +125,14 @@ public class ListarReportesUI extends AppCompatActivity {
 
     // Clase interna Reporte
     public class Reporte {
-        private String idReporte, idUsuario, fecha, descripcion, imagenUrl;
+        private String idReporte, idUsuario, fecha, descripcion ,referencia, imagenUrl;
 
-        public Reporte(String idReporte, String idUsuario, String fecha, String descripcion, String imagenUrl) {
+        public Reporte(String idReporte, String idUsuario, String fecha, String descripcion ,String referencia , String imagenUrl) {
             this.idReporte = idReporte;
             this.idUsuario = idUsuario;
             this.fecha = fecha;
             this.descripcion = descripcion;
+            this.referencia = referencia;
             this.imagenUrl = imagenUrl;
         }
 
@@ -138,6 +140,7 @@ public class ListarReportesUI extends AppCompatActivity {
         public String getIdUsuario() { return idUsuario; }
         public String getFecha() { return fecha; }
         public String getDescripcion() { return descripcion; }
+        public String getReferencia() { return referencia; }
         public String getImagenUrl() { return imagenUrl; }
     }
 
@@ -152,7 +155,7 @@ public class ListarReportesUI extends AppCompatActivity {
         }
 
         public class ReporteViewHolder extends RecyclerView.ViewHolder {
-            TextView tvIdReporte, tvIdUsuario, tvFecha, tvDescripcion;
+            TextView tvIdReporte, tvIdUsuario, tvFecha, tvDescripcion,tvReferencia;
             ImageView imgvReporte;
             Button btnVerReporte;
 
@@ -162,6 +165,7 @@ public class ListarReportesUI extends AppCompatActivity {
                 tvIdUsuario = itemView.findViewById(R.id.tvIdUsuario);
                 tvFecha = itemView.findViewById(R.id.tvFecha);
                 tvDescripcion = itemView.findViewById(R.id.tvDescripcion);
+                tvReferencia = itemView.findViewById(R.id.tvReferencia);
                 imgvReporte = itemView.findViewById(R.id.imgvReporte);
                 btnVerReporte = itemView.findViewById(R.id.btnVerReporteCompleto);  // Asegúrate de que coincida con el XML
             }
@@ -182,6 +186,7 @@ public class ListarReportesUI extends AppCompatActivity {
             holder.tvIdUsuario.setText("ID Usuario: " + reporte.getIdUsuario());
             holder.tvFecha.setText("Fecha: " + reporte.getFecha());
             holder.tvDescripcion.setText("Descripción: " + reporte.getDescripcion());
+            holder.tvReferencia.setText("Referencia: " + reporte.getReferencia());
 
             // Usar Picasso para cargar la imagen desde la URL
             Picasso.get().load(reporte.getImagenUrl()).into(holder.imgvReporte);
@@ -193,6 +198,7 @@ public class ListarReportesUI extends AppCompatActivity {
                 intent.putExtra("idUsuario", reporte.getIdUsuario());
                 intent.putExtra("fecha", reporte.getFecha());
                 intent.putExtra("descripcion", reporte.getDescripcion());
+                intent.putExtra("referencia", reporte.getReferencia());
                 intent.putExtra("imagenUrl", reporte.getImagenUrl());
                 intent.putExtra("username", username);
                 startActivity(intent);  // Inicia la actividad

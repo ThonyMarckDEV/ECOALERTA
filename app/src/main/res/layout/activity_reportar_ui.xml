@@ -22,11 +22,11 @@
 
     <EditText
         android:id="@+id/textArea"
-        android:layout_width="284dp"
-        android:layout_height="97dp"
+        android:layout_width="268dp"
+        android:layout_height="62dp"
         android:background="@android:drawable/edit_text"
         android:fontFamily="@font/adlam_display"
-        android:hint="Escribe aquí..."
+        android:hint="Escribe aquí el problema..."
         android:inputType="textMultiLine"
         android:lines="5"
         android:maxLines="10"
@@ -39,7 +39,28 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.723" />
+        app:layout_constraintVertical_bias="0.656" />
+
+    <EditText
+        android:id="@+id/txtReferencia"
+        android:layout_width="263dp"
+        android:layout_height="48dp"
+        android:background="@android:drawable/edit_text"
+        android:fontFamily="@font/adlam_display"
+        android:hint="Escribe aquí la referencia..."
+        android:inputType="textMultiLine"
+        android:lines="5"
+        android:maxLines="10"
+        android:minLines="3"
+        android:padding="16dp"
+        android:textColor="#000000"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.749" />
+
 
     <TextView
         android:id="@+id/txvfecha"

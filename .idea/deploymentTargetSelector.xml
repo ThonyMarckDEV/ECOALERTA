@@ -3,7 +3,7 @@
   <component name="deploymentTargetSelector">
     <selectionStates>
       <SelectionState runConfigName="app">
-        <option name="selectionMode" value="DROPDOWN" />
+        <option name="selectionMode" value="DIALOG" />
         <DropdownSelection timestamp="2024-10-18T11:59:40.530967500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
@@ -20,7 +20,7 @@
             </Target>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Thony-PC\.android\avd\Pixel_7_Pro_API_35.avd" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=R5CRB2Q69DP" />
               </handle>
             </Target>
           </targets>
