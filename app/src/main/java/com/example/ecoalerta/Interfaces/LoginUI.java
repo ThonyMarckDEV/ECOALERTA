@@ -41,7 +41,6 @@ public class LoginUI extends AppCompatActivity {
 
     private Intent cargaIntent;
     private EditText txtUsername, txtPassword;
-    private String currentVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
